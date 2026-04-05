@@ -530,8 +530,8 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
 
         if (pts.length > 0) {
           const heat = L.heatLayer(pts, {
-            radius: 22, blur: 18, maxZoom: 17,
-            gradient: { 0.2:'#86efac', 0.5:'#22c55e', 0.75:'#bef264', 1:'#f0a030' }
+            radius: 28, blur: 12, maxZoom: 17, minOpacity: 0.6, max: 0.6,
+            gradient: { 0.3:'#86efac', 0.6:'#22c55e', 0.8:'#bef264', 1:'#f0a030' }
           }).addTo(map);
           heatRef.current = heat;
           setObsCount(pts.length);
