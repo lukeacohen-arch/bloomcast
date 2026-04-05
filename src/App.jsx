@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 const NOW_M = 4;
 const MO   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -418,36 +418,135 @@ function SpeciesDetail({sp,onBack}){
   );
 }
 
-// ── Bloom Radar ──────────────────────────────────────────────────────────────
-function BloomRadar({month,hiveName}){
-  const active=SP.filter(s=>s.pm.includes(month)||s.pm.includes(month-1));
-  const dots=active.map((s,i)=>{
-    const a=i*2.39996-Math.PI/2,r=Math.min(30+(s.ns/10)*65+(i%4)*12,108);
-    const isActive=s.pm.includes(month);
-    return{...s,x:130+Math.cos(a)*r,y:130+Math.sin(a)*r,sz:4+s.ns*1.1*(isActive?1:0.45),isActive};
-  });
-  return(
-    <svg width="260" height="260" viewBox="0 0 260 260" style={{display:'block',margin:'0 auto'}}>
-      <defs><radialGradient id="rbg" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stopColor="#e8f0e8"/><stop offset="100%" stopColor="#f5f2ea"/>
-      </radialGradient></defs>
-      <circle cx="130" cy="130" r="127" fill="url(#rbg)" stroke={T.border} strokeWidth="1"/>
-      {[40,75,110].map(r=><circle key={r} cx="130" cy="130" r={r} fill="none" stroke={T.border2} strokeWidth="0.5" strokeDasharray="3,6"/>)}
-      <line x1="130" y1="12" x2="130" y2="248" stroke={T.border} strokeWidth="0.5"/>
-      <line x1="12" y1="130" x2="248" y2="130" stroke={T.border} strokeWidth="0.5"/>
-      <text x="133" y="93" fill={T.dim} fontSize="8" fontFamily="system-ui">1 mi</text>
-      <text x="133" y="57" fill={T.dim} fontSize="8" fontFamily="system-ui">2 mi</text>
-      {dots.map((d,i)=>(
-        <g key={i}>
-          <circle cx={d.x} cy={d.y} r={d.sz+9} fill={d.c} opacity={d.isActive?0.07:0.02}/>
-          <circle cx={d.x} cy={d.y} r={d.sz+4} fill={d.c} opacity={d.isActive?0.16:0.05}/>
-          <circle cx={d.x} cy={d.y} r={d.sz} fill={d.c} opacity={d.isActive?0.85:0.25}/>
-        </g>
-      ))}
-      <circle cx="130" cy="130" r="14" fill={T.amber} opacity="0.95"/>
-      <text x="130" y="134" textAnchor="middle" fontSize="14" dominantBaseline="middle">🐝</text>
-      {hiveName&&<text x="130" y="152" textAnchor="middle" fontSize="7" fill={T.amber} opacity="0.75" fontFamily="system-ui">{hiveName}</text>}
-    </svg>
+// ── Satellite Map Helpers ────────────────────────────────────────────────────
+const loadScript = src => new Promise((res, rej) => {
+  if (document.querySelector(`script[src="${src}"]`)) { res(); return; }
+  const s = document.createElement('script');
+  s.src = src; s.onload = res; s.onerror = rej;
+  document.head.appendChild(s);
+});
+const loadCss = href => {
+  if (document.querySelector(`link[href="${href}"]`)) return;
+  const l = document.createElement('link');
+  l.rel = 'stylesheet'; l.href = href; document.head.appendChild(l);
+};
+
+function generateHeatPoints(lat, lng, species, month) {
+  const active = species.filter(s => s.pm && s.pm.includes(month));
+  const maxNec = active.length ? Math.max(...active.map(s => s.ns || 5)) : 5;
+  const pts = [];
+  const nC = 6 + Math.floor(Math.random() * 9);
+  for (let c = 0; c < nC; c++) {
+    const clat = lat + (Math.random() - 0.5) * 0.07;
+    const clng = lng + (Math.random() - 0.5) * 0.09;
+    const n = 10 + Math.floor(Math.random() * 20);
+    const w = (0.4 + Math.random() * 0.6) * (maxNec / 10);
+    for (let i = 0; i < n; i++) {
+      pts.push([clat + (Math.random()-0.5)*0.013, clng + (Math.random()-0.5)*0.016, w*(0.5+Math.random()*0.5)]);
+    }
+  }
+  return pts;
+}
+
+function SatelliteMap({ location, allSpecies, month, hive }) {
+  const containerRef = useRef(null);
+  const mapRef = useRef(null);
+  const [status, setStatus] = useState('loading');
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    let cancelled = false;
+    const init = async () => {
+      setStatus('loading');
+      try {
+        loadCss('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js');
+        if (cancelled) return;
+        const L = window.L;
+        let lat = 40.7128, lng = -74.006;
+        if (location) {
+          try {
+            const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`);
+            const d = await r.json();
+            if (d[0]) { lat = parseFloat(d[0].lat); lng = parseFloat(d[0].lon); }
+          } catch {}
+        }
+        if (cancelled) return;
+        if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
+        const map = L.map(containerRef.current, { zoomControl: true }).setView([lat, lng], 13);
+        mapRef.current = map;
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          { attribution:'© Esri', maxZoom:19 }).addTo(map);
+        const pts = generateHeatPoints(lat, lng, allSpecies, month);
+        L.heatLayer(pts, { radius:30, blur:22, maxZoom:17,
+          gradient:{ 0.2:'#86efac', 0.5:'#22c55e', 0.75:'#bef264', 1:'#f0a030' }
+        }).addTo(map);
+        if (hive) {
+          const icon = L.divIcon({ html:'<div style="font-size:22px;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.5))">🐝</div>',
+            className:'', iconSize:[28,28], iconAnchor:[14,14] });
+          L.marker([lat, lng], { icon }).addTo(map).bindPopup(`<b>${hive.name}</b>`);
+        }
+        if (!cancelled) setStatus('ready');
+      } catch { if (!cancelled) setStatus('error'); }
+    };
+    init();
+    return () => { cancelled = true; if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
+  }, [location, month]);
+
+  const active = allSpecies.filter(s => s.pm.includes(month));
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+      <div style={{ position:'relative', borderRadius:16, overflow:'hidden', height:380, background:T.surf2 }}>
+        <div ref={containerRef} style={{ width:'100%', height:'100%' }}/>
+        {status==='loading'&&(
+          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
+            background:`${T.bg}dd`, flexDirection:'column', gap:10 }}>
+            <div style={{ width:36, height:36, borderRadius:'50%', background:T.surf2, animation:'pulse 1.6s ease-in-out infinite' }}/>
+            <div style={{ fontSize:13, color:T.muted }}>Loading satellite imagery…</div>
+          </div>
+        )}
+        {status==='error'&&(
+          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
+            background:T.bg, fontSize:13, color:T.muted, flexDirection:'column', gap:6 }}>
+            <div style={{fontSize:28}}>🛰</div>
+            <div>Enter a location above to load the map</div>
+          </div>
+        )}
+      </div>
+
+      {/* Legend */}
+      <div style={{ background:T.surf, borderRadius:14, padding:'12px 16px', border:`1px solid ${T.border}`,
+        display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+        <div>
+          <div style={{ fontSize:10, color:T.muted, fontWeight:600, letterSpacing:'0.07em', textTransform:'uppercase', marginBottom:6 }}>Bloom Density</div>
+          <div style={{ display:'flex', alignItems:'center', gap:1 }}>
+            {['#86efac','#22c55e','#bef264','#f0a030'].map((c,i)=>(
+              <div key={i} style={{ width:30, height:8, background:c,
+                borderRadius: i===0?'99px 0 0 99px':i===3?'0 99px 99px 0':'0' }}/>
+            ))}
+            <div style={{ display:'flex', justifyContent:'space-between', width:60, marginLeft:8 }}>
+              <span style={{ fontSize:10, color:T.muted }}>Low</span>
+              <span style={{ fontSize:10, color:T.muted }}>High</span>
+            </div>
+          </div>
+        </div>
+        {hive&&<div style={{ fontSize:12, color:T.amber, display:'flex', alignItems:'center', gap:4 }}>🐝 {hive.name}</div>}
+      </div>
+
+      {/* Active species */}
+      {active.length > 0 && (
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+          {active.map(s=>(
+            <div key={s.id} style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px',
+              borderRadius:99, background:`${s.c}18`, border:`1px solid ${s.c}30`, fontSize:12 }}>
+              <div style={{ width:6, height:6, borderRadius:'50%', background:s.c }}/>
+              <span style={{ color:T.muted }}>{s.name}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -672,36 +771,21 @@ export default function App(){
 
         {/* ── RADAR ── */}
         {tab==='map'&&(
-          <div style={{background:T.surf,borderRadius:20,padding:18,border:`1px solid ${T.border}`}}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
-              <div style={{fontSize:14,fontWeight:600,color:T.text}}>Bloom Radar</div>
-              {hive&&<div style={{fontSize:12,color:T.amber}}>📍 {hive.name}</div>}
-            </div>
-            <div style={{fontSize:12,color:T.muted,marginBottom:14}}>3-mile foraging radius — select month</div>
-            <div style={{display:'flex',gap:4,flexWrap:'wrap',marginBottom:16}}>
-              {MO.map((m,i)=>(
-                <button key={i} onClick={()=>setViewMonth(i+1)} style={{padding:'4px 9px',borderRadius:99,border:'none',cursor:'pointer',fontSize:11,fontFamily:'inherit',
-                  background:viewMonth===i+1?T.accent:T.bg,color:viewMonth===i+1?'#0b1410':T.muted,fontWeight:viewMonth===i+1?700:400}}>{m}</button>
-              ))}
-            </div>
-            <BloomRadar month={viewMonth} hiveName={hive?.name}/>
-            {!hive&&(
-              <div style={{textAlign:'center',marginTop:10}}>
-                <button onClick={()=>{setShowHiveForm(true);setTab('dashboard');}}
-                  style={{background:'none',border:`1px dashed ${T.border2}`,borderRadius:10,color:T.muted,padding:'6px 14px',cursor:'pointer',fontSize:12,fontFamily:'inherit'}}>
-                  📍 Pin your hive location
-                </button>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div style={{background:T.surf,borderRadius:20,padding:18,border:`1px solid ${T.border}`}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                <div style={{fontSize:14,fontWeight:600,color:T.text}}>Satellite Bloom Map</div>
+                {!location&&<div style={{fontSize:11,color:T.muted}}>Enter a region to load</div>}
               </div>
-            )}
-            <div style={{marginTop:16,fontSize:10,color:T.muted,fontWeight:600,letterSpacing:'0.07em',textTransform:'uppercase',marginBottom:8}}>Active</div>
-            <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-              {SP.filter(s=>s.pm.includes(viewMonth)).map(s=>(
-                <div key={s.id} style={{display:'flex',alignItems:'center',gap:5,fontSize:12}}>
-                  <div style={{width:7,height:7,borderRadius:'50%',background:s.c,flexShrink:0}}/>
-                  <span style={{color:T.muted}}>{s.name}</span>
-                </div>
-              ))}
+              <div style={{fontSize:12,color:T.muted,marginBottom:14}}>Flowering plant density heatmap — select month</div>
+              <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                {MO.map((m,i)=>(
+                  <button key={i} onClick={()=>setViewMonth(i+1)} style={{padding:'4px 9px',borderRadius:99,border:'none',cursor:'pointer',fontSize:11,fontFamily:'inherit',
+                    background:viewMonth===i+1?T.accent:'transparent',color:viewMonth===i+1?'#fff':T.muted,fontWeight:viewMonth===i+1?700:400}}>{m}</button>
+                ))}
+              </div>
             </div>
+            <SatelliteMap location={location} allSpecies={SP} month={viewMonth} hive={hive}/>
           </div>
         )}
 
