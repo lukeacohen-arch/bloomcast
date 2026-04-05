@@ -431,39 +431,57 @@ const loadCss = href => {
   l.rel = 'stylesheet'; l.href = href; document.head.appendChild(l);
 };
 
-function generateHeatPoints(lat, lng, species, month) {
-  const active = species.filter(s => s.pm && s.pm.includes(month));
-  const maxNec = active.length ? Math.max(...active.map(s => s.ns || 5)) : 5;
-  const pts = [];
-  const nC = 6 + Math.floor(Math.random() * 9);
-  for (let c = 0; c < nC; c++) {
-    const clat = lat + (Math.random() - 0.5) * 0.07;
-    const clng = lng + (Math.random() - 0.5) * 0.09;
-    const n = 10 + Math.floor(Math.random() * 20);
-    const w = (0.4 + Math.random() * 0.6) * (maxNec / 10);
-    for (let i = 0; i < n; i++) {
-      pts.push([clat + (Math.random()-0.5)*0.013, clng + (Math.random()-0.5)*0.016, w*(0.5+Math.random()*0.5)]);
-    }
-  }
-  return pts;
+// Fetch real GPS observation data from iNaturalist
+async function fetchRealHeatPoints(lat, lng, species, month) {
+  const blooming = species.filter(s => s.pm.includes(month));
+  if (!blooming.length) return [];
+
+  const fetchSpecies = async sp => {
+    try {
+      const url = `https://api.inaturalist.org/v1/observations?` +
+        `taxon_name=${encodeURIComponent(sp.inat)}` +
+        `&lat=${lat}&lng=${lng}&radius=40` +
+        `&month=${month}&per_page=200` +
+        `&quality_grade=research&geo=true&order_by=observed_on`;
+      const r = await fetch(url);
+      if (!r.ok) return [];
+      const d = await r.json();
+      const weight = sp.ns / 10;
+      return (d.results || [])
+        .filter(o => o.location)
+        .map(o => {
+          const [olat, olng] = o.location.split(',').map(Number);
+          return [olat, olng, weight];
+        });
+    } catch { return []; }
+  };
+
+  const all = await Promise.all(blooming.map(fetchSpecies));
+  return all.flat();
 }
 
 function SatelliteMap({ location, allSpecies, month, hive }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
-  const [status, setStatus] = useState('loading');
+  const heatRef = useRef(null);
+  const [status, setStatus] = useState('idle');
+  const [obsCount, setObsCount] = useState(0);
 
   useEffect(() => {
     if (!containerRef.current) return;
     let cancelled = false;
+
     const init = async () => {
       setStatus('loading');
+      setObsCount(0);
       try {
         loadCss('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css');
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js');
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js');
         if (cancelled) return;
         const L = window.L;
+
+        // Geocode location
         let lat = 40.7128, lng = -74.006;
         if (location) {
           try {
@@ -473,44 +491,94 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
           } catch {}
         }
         if (cancelled) return;
-        if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
-        const map = L.map(containerRef.current, { zoomControl: true }).setView([lat, lng], 13);
+
+        // Init map
+        if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; heatRef.current = null; }
+        const map = L.map(containerRef.current, { zoomControl: true }).setView([lat, lng], 12);
         mapRef.current = map;
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          { attribution:'© Esri', maxZoom:19 }).addTo(map);
-        const pts = generateHeatPoints(lat, lng, allSpecies, month);
-        L.heatLayer(pts, { radius:30, blur:22, maxZoom:17,
-          gradient:{ 0.2:'#86efac', 0.5:'#22c55e', 0.75:'#bef264', 1:'#f0a030' }
-        }).addTo(map);
+
+        // Satellite tiles
+        L.tileLayer(
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          { attribution:'© Esri', maxZoom:19 }
+        ).addTo(map);
+
+        // Hive marker
         if (hive) {
-          const icon = L.divIcon({ html:'<div style="font-size:22px;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.5))">🐝</div>',
-            className:'', iconSize:[28,28], iconAnchor:[14,14] });
+          const icon = L.divIcon({
+            html:'<div style="font-size:22px;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.6))">🐝</div>',
+            className:'', iconSize:[28,28], iconAnchor:[14,14]
+          });
           L.marker([lat, lng], { icon }).addTo(map).bindPopup(`<b>${hive.name}</b>`);
         }
-        if (!cancelled) setStatus('ready');
+
+        // Fetch real iNaturalist observations
+        setStatus('fetching');
+        const pts = await fetchRealHeatPoints(lat, lng, allSpecies, month);
+        if (cancelled) return;
+
+        if (pts.length > 0) {
+          const heat = L.heatLayer(pts, {
+            radius: 22, blur: 18, maxZoom: 17,
+            gradient: { 0.2:'#86efac', 0.5:'#22c55e', 0.75:'#bef264', 1:'#f0a030' }
+          }).addTo(map);
+          heatRef.current = heat;
+          setObsCount(pts.length);
+          setStatus('ready');
+        } else {
+          setStatus('nodata');
+        }
       } catch { if (!cancelled) setStatus('error'); }
     };
+
     init();
-    return () => { cancelled = true; if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; } };
+    return () => {
+      cancelled = true;
+      if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; heatRef.current = null; }
+    };
   }, [location, month]);
 
   const active = allSpecies.filter(s => s.pm.includes(month));
+
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-      <div style={{ position:'relative', borderRadius:16, overflow:'hidden', height:380, background:T.surf2 }}>
+      <div style={{ position:'relative', borderRadius:16, overflow:'hidden', height:400, background:T.surf2 }}>
         <div ref={containerRef} style={{ width:'100%', height:'100%' }}/>
-        {status==='loading'&&(
+
+        {/* Loading overlay */}
+        {(status==='loading'||status==='fetching')&&(
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
-            background:`${T.bg}dd`, flexDirection:'column', gap:10 }}>
+            background:`${T.bg}cc`, flexDirection:'column', gap:10, pointerEvents:'none' }}>
             <div style={{ width:36, height:36, borderRadius:'50%', background:T.surf2, animation:'pulse 1.6s ease-in-out infinite' }}/>
-            <div style={{ fontSize:13, color:T.muted }}>Loading satellite imagery…</div>
+            <div style={{ fontSize:13, color:T.muted }}>
+              {status==='loading' ? 'Loading satellite imagery…' : `Fetching ${active.length} species observations from iNaturalist…`}
+            </div>
           </div>
         )}
-        {status==='error'&&(
+
+        {/* No location state */}
+        {status==='idle'&&(
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
-            background:T.bg, fontSize:13, color:T.muted, flexDirection:'column', gap:6 }}>
-            <div style={{fontSize:28}}>🛰</div>
-            <div>Enter a location above to load the map</div>
+            background:T.bg, fontSize:13, color:T.muted, flexDirection:'column', gap:8 }}>
+            <div style={{fontSize:32}}>🛰️</div>
+            <div>Enter a region above to load the satellite map</div>
+          </div>
+        )}
+
+        {/* No data state */}
+        {status==='nodata'&&(
+          <div style={{ position:'absolute', bottom:14, left:'50%', transform:'translateX(-50%)',
+            background:'rgba(0,0,0,0.65)', borderRadius:99, padding:'6px 14px', fontSize:12, color:'#fff', whiteSpace:'nowrap' }}>
+            No observations found nearby — try a broader region
+          </div>
+        )}
+
+        {/* Obs count badge */}
+        {status==='ready'&&obsCount>0&&(
+          <div style={{ position:'absolute', bottom:14, left:'50%', transform:'translateX(-50%)',
+            background:'rgba(0,0,0,0.65)', borderRadius:99, padding:'6px 14px',
+            fontSize:12, color:'#fff', whiteSpace:'nowrap' }}>
+            {obsCount.toLocaleString()} real observations · iNaturalist
           </div>
         )}
       </div>
@@ -523,7 +591,7 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
           <div style={{ display:'flex', alignItems:'center', gap:1 }}>
             {['#86efac','#22c55e','#bef264','#f0a030'].map((c,i)=>(
               <div key={i} style={{ width:30, height:8, background:c,
-                borderRadius: i===0?'99px 0 0 99px':i===3?'0 99px 99px 0':'0' }}/>
+                borderRadius:i===0?'99px 0 0 99px':i===3?'0 99px 99px 0':'0' }}/>
             ))}
             <div style={{ display:'flex', justifyContent:'space-between', width:60, marginLeft:8 }}>
               <span style={{ fontSize:10, color:T.muted }}>Low</span>
@@ -531,11 +599,11 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
             </div>
           </div>
         </div>
-        {hive&&<div style={{ fontSize:12, color:T.amber, display:'flex', alignItems:'center', gap:4 }}>🐝 {hive.name}</div>}
+        {hive&&<div style={{ fontSize:12, color:T.amber }}>🐝 {hive.name}</div>}
       </div>
 
       {/* Active species */}
-      {active.length > 0 && (
+      {active.length>0&&(
         <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
           {active.map(s=>(
             <div key={s.id} style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px',
