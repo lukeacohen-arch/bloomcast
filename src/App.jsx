@@ -479,9 +479,16 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js');
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js');
         if (cancelled) return;
+
         const L = window.L;
 
-        // Geocode location
+        // Force clean any existing map on this container
+        if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; heatRef.current = null; }
+        if (containerRef.current._leaflet_id) {
+          containerRef.current._leaflet_id = undefined;
+        }
+
+        // Geocode
         let lat = 40.7128, lng = -74.006;
         if (location) {
           try {
@@ -492,28 +499,32 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
         }
         if (cancelled) return;
 
-        // Init map
-        if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; heatRef.current = null; }
+        // Create map
         const map = L.map(containerRef.current, { zoomControl: true }).setView([lat, lng], 12);
         mapRef.current = map;
 
         // Satellite tiles
         L.tileLayer(
           'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          { attribution:'© Esri', maxZoom:19 }
+          { attribution: '© Esri', maxZoom: 19 }
         ).addTo(map);
+
+        // Critical: force Leaflet to recalculate container size
+        setTimeout(() => { if (mapRef.current) mapRef.current.invalidateSize(); }, 150);
 
         // Hive marker
         if (hive) {
           const icon = L.divIcon({
-            html:'<div style="font-size:22px;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.6))">🐝</div>',
-            className:'', iconSize:[28,28], iconAnchor:[14,14]
+            html: '<div style="font-size:22px;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.6))">🐝</div>',
+            className: '', iconSize: [28,28], iconAnchor: [14,14]
           });
           L.marker([lat, lng], { icon }).addTo(map).bindPopup(`<b>${hive.name}</b>`);
         }
 
-        // Fetch real iNaturalist observations
+        if (cancelled) return;
         setStatus('fetching');
+
+        // Fetch real iNaturalist observations
         const pts = await fetchRealHeatPoints(lat, lng, allSpecies, month);
         if (cancelled) return;
 
@@ -528,7 +539,10 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
         } else {
           setStatus('nodata');
         }
-      } catch { if (!cancelled) setStatus('error'); }
+      } catch(e) {
+        console.error('Map error:', e);
+        if (!cancelled) setStatus('error');
+      }
     };
 
     init();
@@ -542,43 +556,41 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-      <div style={{ position:'relative', borderRadius:16, overflow:'hidden', height:400, background:T.surf2 }}>
-        <div ref={containerRef} style={{ width:'100%', height:'100%' }}/>
+      <div style={{ position:'relative', borderRadius:16, overflow:'hidden', border:`1px solid ${T.border}` }}>
+        {/* Map container — explicit pixel height so Leaflet can measure it */}
+        <div ref={containerRef} style={{ width:'100%', height:'400px', display:'block' }}/>
 
-        {/* Loading overlay */}
         {(status==='loading'||status==='fetching')&&(
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
-            background:`${T.bg}cc`, flexDirection:'column', gap:10, pointerEvents:'none' }}>
+            background:`${T.bg}cc`, flexDirection:'column', gap:10, pointerEvents:'none', zIndex:1000 }}>
             <div style={{ width:36, height:36, borderRadius:'50%', background:T.surf2, animation:'pulse 1.6s ease-in-out infinite' }}/>
             <div style={{ fontSize:13, color:T.muted }}>
-              {status==='loading' ? 'Loading satellite imagery…' : `Fetching ${active.length} species observations from iNaturalist…`}
+              {status==='loading' ? 'Loading satellite imagery…' : `Fetching ${active.length} species from iNaturalist…`}
             </div>
           </div>
         )}
 
-        {/* No location state */}
         {status==='idle'&&(
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center',
-            background:T.bg, fontSize:13, color:T.muted, flexDirection:'column', gap:8 }}>
+            background:T.bg, fontSize:13, color:T.muted, flexDirection:'column', gap:8, zIndex:1000 }}>
             <div style={{fontSize:32}}>🛰️</div>
             <div>Enter a region above to load the satellite map</div>
           </div>
         )}
 
-        {/* No data state */}
-        {status==='nodata'&&(
-          <div style={{ position:'absolute', bottom:14, left:'50%', transform:'translateX(-50%)',
-            background:'rgba(0,0,0,0.65)', borderRadius:99, padding:'6px 14px', fontSize:12, color:'#fff', whiteSpace:'nowrap' }}>
-            No observations found nearby — try a broader region
-          </div>
-        )}
-
-        {/* Obs count badge */}
         {status==='ready'&&obsCount>0&&(
           <div style={{ position:'absolute', bottom:14, left:'50%', transform:'translateX(-50%)',
             background:'rgba(0,0,0,0.65)', borderRadius:99, padding:'6px 14px',
-            fontSize:12, color:'#fff', whiteSpace:'nowrap' }}>
+            fontSize:12, color:'#fff', whiteSpace:'nowrap', zIndex:1000 }}>
             {obsCount.toLocaleString()} real observations · iNaturalist
+          </div>
+        )}
+
+        {status==='nodata'&&(
+          <div style={{ position:'absolute', bottom:14, left:'50%', transform:'translateX(-50%)',
+            background:'rgba(0,0,0,0.65)', borderRadius:99, padding:'6px 14px',
+            fontSize:12, color:'#fff', whiteSpace:'nowrap', zIndex:1000 }}>
+            No observations found — try a broader region name
           </div>
         )}
       </div>
@@ -602,7 +614,6 @@ function SatelliteMap({ location, allSpecies, month, hive }) {
         {hive&&<div style={{ fontSize:12, color:T.amber }}>🐝 {hive.name}</div>}
       </div>
 
-      {/* Active species */}
       {active.length>0&&(
         <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
           {active.map(s=>(
