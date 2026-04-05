@@ -38,6 +38,14 @@ const ST = {
 };
 
 const ANTHROPIC_KEY = (typeof window !== 'undefined' && window.__ANTHROPIC_KEY__) || '';
+const SUPABASE_URL  = (typeof window !== 'undefined' && window.__SUPABASE_URL__)  || '';
+const SUPABASE_KEY  = (typeof window !== 'undefined' && window.__SUPABASE_KEY__)  || '';
+
+const sbHeaders = () => ({
+  'Content-Type':  'application/json',
+  'apikey':        SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+});
 const apiHeaders = () => ({
   "Content-Type": "application/json",
   ...(ANTHROPIC_KEY ? {
@@ -217,44 +225,48 @@ function CommunityTab(){
   const[form,setForm]=useState({species:'',status:'blooming',location:'',note:''});
   const[submitting,setSubmitting]=useState(false);
   const[submitted,setSubmitted]=useState(false);
+  const[error,setError]=useState('');
 
   const loadReports=async()=>{
     setLoading(true);
     try{
-      const keys=await window.storage.list('bc-report:',true);
-      const items=await Promise.all(
-        (keys.keys||[]).slice(-30).reverse().map(async k=>{
-          try{const r=await window.storage.get(k,true);return r?JSON.parse(r.value):null;}catch{return null;}
-        })
+      const r=await fetch(
+        `${SUPABASE_URL}/rest/v1/reports?order=ts.desc&limit=50`,
+        {headers:sbHeaders()}
       );
-      setReports(items.filter(Boolean));
-    }catch{setReports([]);}
+      if(r.ok) setReports(await r.json());
+    }catch{}
     setLoading(false);
   };
 
   useEffect(()=>{loadReports();},[]);
 
   const submit=async()=>{
-    if(!form.species.trim()||!form.location.trim()) return;
-    setSubmitting(true);
+    if(!form.species.trim()||!form.location.trim()){
+      setError('Species and location are required.');return;
+    }
+    setError('');setSubmitting(true);
+    if(!SUPABASE_URL||!SUPABASE_KEY){
+      setError('Supabase not configured — check your environment variables.');
+      setSubmitting(false);return;
+    }
     try{
-      const report={...form,ts:Date.now(),id:Math.random().toString(36).slice(2)};
-      await window.storage.set(`bc-report:${report.ts}-${report.id}`,JSON.stringify(report),true);
-      setForm({species:'',status:'blooming',location:'',note:''});
-      setSubmitted(true);
-      setTimeout(()=>setSubmitted(false),3000);
-      await loadReports();
-    }catch{}
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/reports`,{
+        method:'POST',
+        headers:{...sbHeaders(),'Prefer':'return=minimal'},
+        body:JSON.stringify({...form,ts:Date.now()}),
+      });
+      if(r.ok||r.status===201){
+        setForm({species:'',status:'blooming',location:'',note:''});
+        setSubmitted(true);
+        setTimeout(()=>setSubmitted(false),3000);
+        await loadReports();
+      } else {
+        const txt=await r.text();
+        setError(`Supabase error ${r.status}: ${txt}`);
+      }
+    }catch(e){setError(`Connection error: ${e.message}`);}
     setSubmitting(false);
-  };
-
-  const timeAgo=ts=>{
-    const m=Math.floor((Date.now()-ts)/60000);
-    if(m<1) return 'just now';
-    if(m<60) return `${m}m ago`;
-    const h=Math.floor(m/60);
-    if(h<24) return `${h}h ago`;
-    return `${Math.floor(h/24)}d ago`;
   };
 
   const stColor={blooming:'#4ade80',opening:'#2dd4bf',fading:'#fb923c','not yet':'#818cf8'};
@@ -282,7 +294,8 @@ function CommunityTab(){
             value={form.location} onChange={e=>setForm(f=>({...f,location:e.target.value}))}/>
           <textarea style={{...inp,resize:'none',height:'60px'}} placeholder="Note (optional) — bee activity, density, conditions…"
             value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))}/>
-          <button onClick={submit} disabled={submitting||!form.species.trim()||!form.location.trim()}
+          {error&&<div style={{fontSize:'12px',color:'#ef4444',marginTop:'4px'}}>{error}</div>}
+          <button onClick={submit} disabled={submitting}
             style={{background:submitted?'#1a4a2e':'#f5a623',color:submitted?'#4ade80':'#060f0a',
               border:'none',borderRadius:'8px',padding:'9px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
             {submitted?'✓ Sighting Logged!':submitting?'Submitting…':'Submit Sighting'}
@@ -295,6 +308,7 @@ function CommunityTab(){
         COMMUNITY SIGHTINGS
       </div>
       {loading&&<div style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px',color:'#2d7a4a',fontSize:'13px'}}>Loading reports…</div>}
+                {loading&&<div style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px',color:'#2d7a4a',fontSize:'13px'}}>Loading community reports…</div>}
       {!loading&&reports.length===0&&(
         <div style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px',
           color:'#2d5a3d',fontSize:'13px',textAlign:'center'}}>
@@ -311,7 +325,7 @@ function CommunityTab(){
             </div>
           </div>
           <div style={{fontSize:'11px',color:'#2d7a4a',marginBottom:r.note?'6px':'0'}}>
-            📍 {r.location} · {timeAgo(r.ts)}
+            📍 {r.location} · {new Date(r.ts).toLocaleDateString()}
           </div>
           {r.note&&<div style={{fontSize:'12px',color:'#6ab890',fontStyle:'italic'}}>{r.note}</div>}
         </div>
