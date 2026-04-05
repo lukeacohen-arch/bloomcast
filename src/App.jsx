@@ -5,54 +5,63 @@ const MO   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 const MO_S = ['J','F','M','A','M','J','J','A','S','O','N','D'];
 
 const SP = [
-  {id:1,  name:"Cherry Blossom",  inat:"Prunus serrulata",            type:"ornamental", pm:[3,4],     ns:7,  c:"#ffb7c5"},
-  {id:2,  name:"Eastern Redbud",  inat:"Cercis canadensis",            type:"ornamental", pm:[3,4],     ns:6,  c:"#da77f2"},
-  {id:3,  name:"Dandelion",        inat:"Taraxacum officinale",         type:"forage",     pm:[3,4,5],   ns:7,  c:"#ffd43b"},
-  {id:4,  name:"Wild Violet",      inat:"Viola sororia",                type:"wildflower", pm:[4,5],     ns:4,  c:"#9775fa"},
-  {id:5,  name:"Apple Blossom",    inat:"Malus domestica",              type:"orchard",    pm:[4,5],     ns:8,  c:"#ffa8b4"},
-  {id:6,  name:"Phacelia",         inat:"Phacelia tanacetifolia",       type:"forage",     pm:[4,5],     ns:9,  c:"#748ffc"},
-  {id:7,  name:"White Clover",     inat:"Trifolium repens",             type:"forage",     pm:[5,6,7],   ns:9,  c:"#69db7c"},
-  {id:8,  name:"Black Locust",     inat:"Robinia pseudoacacia",         type:"forage",     pm:[5,6],     ns:10, c:"#c0eb75"},
-  {id:9,  name:"Linden",           inat:"Tilia americana",              type:"forage",     pm:[6,7],     ns:10, c:"#74c0fc"},
-  {id:10, name:"Lavender",         inat:"Lavandula angustifolia",       type:"garden",     pm:[6,7,8],   ns:8,  c:"#d0bfff"},
-  {id:11, name:"Black-eyed Susan", inat:"Rudbeckia hirta",              type:"wildflower", pm:[6,7,8],   ns:5,  c:"#ffa94d"},
-  {id:12, name:"Sunflower",        inat:"Helianthus annuus",            type:"garden",     pm:[7,8,9],   ns:7,  c:"#ffe066"},
-  {id:13, name:"Buckwheat",        inat:"Fagopyrum esculentum",         type:"forage",     pm:[7,8],     ns:8,  c:"#e9c46a"},
-  {id:14, name:"Goldenrod",        inat:"Solidago canadensis",          type:"forage",     pm:[8,9,10],  ns:8,  c:"#ffd43b"},
-  {id:15, name:"Aster",            inat:"Symphyotrichum novae-angliae", type:"wildflower", pm:[9,10,11], ns:7,  c:"#cc5de8"},
+  {id:1,  name:"Cherry Blossom",  inat:"Prunus serrulata",            type:"ornamental", pm:[3,4],     ns:7,  c:"#f9a8c0"},
+  {id:2,  name:"Eastern Redbud",  inat:"Cercis canadensis",            type:"ornamental", pm:[3,4],     ns:6,  c:"#c084fc"},
+  {id:3,  name:"Dandelion",        inat:"Taraxacum officinale",         type:"forage",     pm:[3,4,5],   ns:7,  c:"#fbbf24"},
+  {id:4,  name:"Wild Violet",      inat:"Viola sororia",                type:"wildflower", pm:[4,5],     ns:4,  c:"#a78bfa"},
+  {id:5,  name:"Apple Blossom",    inat:"Malus domestica",              type:"orchard",    pm:[4,5],     ns:8,  c:"#fda4af"},
+  {id:6,  name:"Phacelia",         inat:"Phacelia tanacetifolia",       type:"forage",     pm:[4,5],     ns:9,  c:"#6d9af5"},
+  {id:7,  name:"White Clover",     inat:"Trifolium repens",             type:"forage",     pm:[5,6,7],   ns:9,  c:"#6ee7b7"},
+  {id:8,  name:"Black Locust",     inat:"Robinia pseudoacacia",         type:"forage",     pm:[5,6],     ns:10, c:"#bef264"},
+  {id:9,  name:"Linden",           inat:"Tilia americana",              type:"forage",     pm:[6,7],     ns:10, c:"#7dd3fc"},
+  {id:10, name:"Lavender",         inat:"Lavandula angustifolia",       type:"garden",     pm:[6,7,8],   ns:8,  c:"#c4b5fd"},
+  {id:11, name:"Black-eyed Susan", inat:"Rudbeckia hirta",              type:"wildflower", pm:[6,7,8],   ns:5,  c:"#fb923c"},
+  {id:12, name:"Sunflower",        inat:"Helianthus annuus",            type:"garden",     pm:[7,8,9],   ns:7,  c:"#fde047"},
+  {id:13, name:"Buckwheat",        inat:"Fagopyrum esculentum",         type:"forage",     pm:[7,8],     ns:8,  c:"#d4a76a"},
+  {id:14, name:"Goldenrod",        inat:"Solidago canadensis",          type:"forage",     pm:[8,9,10],  ns:8,  c:"#fbbf24"},
+  {id:15, name:"Aster",            inat:"Symphyotrichum novae-angliae", type:"wildflower", pm:[9,10,11], ns:7,  c:"#a855f7"},
 ];
 
 const TYPES = {
-  forage:     {label:"Forage",     c:"#f5a623"},
+  forage:     {label:"Forage",     c:"#f0a030"},
   ornamental: {label:"Ornamental", c:"#e879a0"},
   wildflower: {label:"Wildflower", c:"#a78bfa"},
-  garden:     {label:"Garden",     c:"#4ade80"},
+  garden:     {label:"Garden",     c:"#4dd892"},
   orchard:    {label:"Orchard",    c:"#fb7185"},
 };
+
 const ST = {
-  blooming:{label:"Blooming",   bg:"#052e16",tc:"#4ade80"},
-  opening: {label:"Opening",    bg:"#042f2e",tc:"#2dd4bf"},
-  fading:  {label:"Fading",     bg:"#2d1b00",tc:"#fb923c"},
-  soon:    {label:"Coming Soon",bg:"#1e1b4b",tc:"#818cf8"},
-  dormant: {label:"Dormant",    bg:"#111827",tc:"#4b5563"},
+  blooming:{label:"Blooming",   bg:"rgba(74,222,128,0.12)", tc:"#4dd892"},
+  opening: {label:"Opening",    bg:"rgba(45,212,191,0.12)", tc:"#2dd4bf"},
+  fading:  {label:"Fading",     bg:"rgba(251,146,60,0.12)", tc:"#fb923c"},
+  soon:    {label:"Coming Soon",bg:"rgba(167,139,250,0.12)",tc:"#a78bfa"},
+  dormant: {label:"Dormant",    bg:"rgba(100,116,139,0.12)",tc:"#64748b"},
+};
+
+// ── Theme ──────────────────────────────────────────────────────────────────
+const T = {
+  bg:      '#f5f2ea',
+  surf:    '#ffffff',
+  surf2:   '#ede9df',
+  border:  'rgba(0,0,0,0.07)',
+  border2: 'rgba(0,0,0,0.12)',
+  text:    '#1a2e1f',
+  muted:   '#4a6a54',
+  dim:     '#8aaa8f',
+  accent:  '#2d8a52',
+  amber:   '#b87010',
 };
 
 const ANTHROPIC_KEY = (typeof window !== 'undefined' && window.__ANTHROPIC_KEY__) || '';
 const SUPABASE_URL  = (typeof window !== 'undefined' && window.__SUPABASE_URL__)  || '';
 const SUPABASE_KEY  = (typeof window !== 'undefined' && window.__SUPABASE_KEY__)  || '';
 
-const sbHeaders = () => ({
-  'Content-Type':  'application/json',
-  'apikey':        SUPABASE_KEY,
-  'Authorization': `Bearer ${SUPABASE_KEY}`,
-});
 const apiHeaders = () => ({
-  "Content-Type": "application/json",
-  ...(ANTHROPIC_KEY ? {
-    "x-api-key": ANTHROPIC_KEY,
-    "anthropic-version": "2023-06-01",
-    "anthropic-dangerous-direct-browser-access": "true",
-  } : {})
+  "Content-Type":"application/json",
+  ...(ANTHROPIC_KEY?{"x-api-key":ANTHROPIC_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"}:{})
+});
+const sbHeaders = () => ({
+  'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,
 });
 
 function getStatus(sp,m){
@@ -65,21 +74,20 @@ function flowInfo(s){
   if(s<3) return ['Dearth','#ef4444'];
   if(s<5) return ['Low Flow','#f97316'];
   if(s<7) return ['Building','#eab308'];
-  if(s<8.5) return ['Good Flow','#84cc16'];
-  return ['Peak Flow','#22c55e'];
+  if(s<8.5) return ['Good Flow',T.accent];
+  return ['Peak Flow','#22d87a'];
 }
 
-const photoCache = {};
+const photoCache={};
 async function fetchINatPhoto(q){
   if(photoCache[q]!==undefined) return photoCache[q];
-  const ctrl=new AbortController(), t=setTimeout(()=>ctrl.abort(),8000);
+  const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),8000);
   try{
     const r=await fetch(`https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(q)}&per_page=1&is_active=true&rank=species`,{signal:ctrl.signal});
-    clearTimeout(t);
-    if(!r.ok){photoCache[q]=null;return null;}
+    clearTimeout(t);if(!r.ok){photoCache[q]=null;return null;}
     const d=await r.json();
     const url=d.results?.[0]?.default_photo?.medium_url||d.results?.[0]?.default_photo?.square_url||null;
-    photoCache[q]=url; return url;
+    photoCache[q]=url;return url;
   }catch{clearTimeout(t);photoCache[q]=null;return null;}
 }
 function usePhoto(q){
@@ -93,123 +101,96 @@ function usePhoto(q){
   return{url,loading};
 }
 
-function Thumb({query,color,size=56}){
+function Thumb({query,color,size=52}){
   const{url,loading}=usePhoto(query);
   return(
-    <div style={{width:size,height:size,borderRadius:10,flexShrink:0,overflow:'hidden',
-      border:`1px solid ${color}40`,background:color+'18',display:'flex',alignItems:'center',justifyContent:'center'}}>
-      {loading?<div style={{width:'55%',height:'55%',borderRadius:'50%',background:`radial-gradient(${color}90,${color}20)`,animation:'pulse 1.4s ease-in-out infinite'}}/>
+    <div style={{width:size,height:size,borderRadius:12,flexShrink:0,overflow:'hidden',
+      border:`1px solid ${color}30`,background:color+'14',display:'flex',alignItems:'center',justifyContent:'center'}}>
+      {loading?<div style={{width:'50%',height:'50%',borderRadius:'50%',background:`${color}50`,animation:'pulse 1.6s ease-in-out infinite'}}/>
        :url?<img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
-       :<span style={{fontSize:size*0.42}}>🌸</span>}
+       :<span style={{fontSize:size*0.38,opacity:0.6}}>🌸</span>}
     </div>
   );
 }
-function Banner({query,color,height=120}){
+function Banner({query,color,height=140}){
   const{url,loading}=usePhoto(query);
   return(
-    <div style={{width:'100%',height,overflow:'hidden',background:color+'18',display:'flex',alignItems:'center',justifyContent:'center'}}>
-      {loading?<div style={{width:44,height:44,borderRadius:'50%',background:`radial-gradient(${color}80,${color}15)`,animation:'pulse 1.4s ease-in-out infinite'}}/>
+    <div style={{width:'100%',height,overflow:'hidden',background:`${color}14`,display:'flex',alignItems:'center',justifyContent:'center'}}>
+      {loading?<div style={{width:40,height:40,borderRadius:'50%',background:`${color}40`,animation:'pulse 1.6s ease-in-out infinite'}}/>
        :url?<img src={url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
-       :<span style={{fontSize:44}}>🌸</span>}
+       :<span style={{fontSize:40,opacity:0.5}}>🌸</span>}
     </div>
   );
 }
 
-// ── Honey Predictor ──────────────────────────────────────────────────────────
-function HoneyPredictor({bloomingSpecies, location}){
+// ── Honey Predictor ─────────────────────────────────────────────────────────
+function HoneyPredictor({bloomingSpecies,location}){
   const[open,setOpen]=useState(false);
   const[result,setResult]=useState(null);
   const[loading,setLoading]=useState(false);
-
   const predict=async()=>{
-    setLoading(true); setResult(null);
+    setLoading(true);setResult(null);
     const names=bloomingSpecies.map(s=>s.name).join(', ');
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",headers:{...apiHeaders()},
-        body:JSON.stringify({
-          model:"claude-sonnet-4-20250514",max_tokens:800,
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{...apiHeaders()},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,
           system:"You are a master beekeeper and honey sommelier. Respond with only a raw JSON object, no markdown.",
           messages:[{role:"user",content:
-            `Based on these flowers currently blooming${location?' in '+location:''}: ${names}.
-Predict the honey varieties a beekeeper would likely harvest. Return JSON:
-{"varieties":[{"name":"variety name","flavor":"evocative 1-2 sentence flavor description","color":"color description","rarity":"Common|Seasonal|Rare","dominant_flower":"main nectar source"}],"blend_note":"1 sentence about the overall honey character this season","harvest_timing":"when to expect harvest ready"}`
-          }]
-        })
-      });
+            `Flowers blooming${location?' in '+location:''}: ${names}. Predict honey varieties. Return JSON:
+{"varieties":[{"name":"","flavor":"","color":"","rarity":"Common|Seasonal|Rare","dominant_flower":""}],"blend_note":"","harvest_timing":""}`
+          }]})});
       const d=await res.json();
       const raw=d.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'';
-      let parsed=null;
-      try{parsed=JSON.parse(raw.trim());}catch{}
-      if(!parsed){const m=raw.match(/\{[\s\S]*\}/);if(m)try{parsed=JSON.parse(m[0]);}catch{}}
-      setResult(parsed||null);
+      let p=null;
+      try{p=JSON.parse(raw.trim());}catch{}
+      if(!p){const m=raw.match(/\{[\s\S]*\}/);if(m)try{p=JSON.parse(m[0]);}catch{}}
+      setResult(p||null);
     }catch{}finally{setLoading(false);}
   };
-
-  const rarityColor={'Common':'#4ade80','Seasonal':'#f5a623','Rare':'#c084fc'};
-
+  const rc={'Common':T.accent,'Seasonal':T.amber,'Rare':'#c084fc'};
   return(
-    <div style={{background:'#0a1f14',border:'1px solid #2d7a4a',borderRadius:'12px',overflow:'hidden'}}>
-      <button onClick={()=>{setOpen(!open);if(!open&&!result)predict();}}
-        style={{width:'100%',padding:'12px 14px',background:'none',border:'none',cursor:'pointer',
+    <div style={{background:T.surf,borderRadius:16,overflow:'hidden',border:`1px solid ${T.border}`}}>
+      <button onClick={()=>{setOpen(v=>!v);if(!open&&!result)predict();}}
+        style={{width:'100%',padding:'14px 18px',background:'none',border:'none',cursor:'pointer',
           display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-          <span style={{fontSize:'18px'}}>🍯</span>
+        <div style={{display:'flex',alignItems:'center',gap:12}}>
+          <div style={{fontSize:22}}>🍯</div>
           <div style={{textAlign:'left'}}>
-            <div style={{fontSize:'13px',fontWeight:'700',color:'#f5a623'}}>Honey Variety Predictor</div>
-            <div style={{fontSize:'11px',color:'#2d7a4a'}}>What honey will your bees make this season?</div>
+            <div style={{fontSize:14,fontWeight:600,color:T.amber,letterSpacing:-0.2}}>Honey Predictor</div>
+            <div style={{fontSize:12,color:T.muted,marginTop:1}}>What will your bees make this season?</div>
           </div>
         </div>
-        <span style={{color:'#2d7a4a',fontSize:'16px'}}>{open?'▲':'▼'}</span>
+        <div style={{color:T.dim,fontSize:12}}>{open?'▲':'▼'}</div>
       </button>
-
       {open&&(
-        <div style={{padding:'0 14px 14px',borderTop:'1px solid #1a4a2e'}}>
+        <div style={{padding:'0 18px 18px',borderTop:`1px solid ${T.border}`}}>
           {loading&&(
-            <div style={{paddingTop:'14px'}}>
-              {[80,60,90].map((w,i)=>(
-                <div key={i} style={{height:'12px',borderRadius:'4px',background:'#1a4a2e',opacity:0.5,
-                  width:`${w}%`,marginBottom:'8px',animation:'pulse 1.4s ease-in-out infinite'}}/>
-              ))}
+            <div style={{paddingTop:16,display:'flex',flexDirection:'column',gap:8}}>
+              {[85,60,72].map((w,i)=><div key={i} style={{height:11,borderRadius:6,background:T.surf2,width:`${w}%`,animation:'pulse 1.6s ease-in-out infinite'}}/>)}
             </div>
           )}
           {!loading&&result&&(
-            <div style={{paddingTop:'12px',display:'flex',flexDirection:'column',gap:'10px'}}>
-              <div style={{fontSize:'12px',lineHeight:'1.6',color:'#8ab8a0',fontStyle:'italic'}}>{result.blend_note}</div>
+            <div style={{paddingTop:14,display:'flex',flexDirection:'column',gap:10}}>
+              {result.blend_note&&<p style={{margin:0,fontSize:13,lineHeight:1.65,color:T.muted,fontStyle:'italic'}}>{result.blend_note}</p>}
               {result.varieties?.map((v,i)=>(
-                <div key={i} style={{background:'#060f0a',borderRadius:'10px',padding:'12px'}}>
-                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'6px'}}>
-                    <div style={{fontSize:'14px',fontWeight:'700',color:'#f5c842'}}>{v.name}</div>
-                    <div style={{fontSize:'10px',padding:'2px 7px',borderRadius:'4px',
-                      background:rarityColor[v.rarity]+'20',color:rarityColor[v.rarity],fontWeight:'600'}}>
-                      {v.rarity}
-                    </div>
+                <div key={i} style={{background:T.bg,borderRadius:12,padding:'12px 14px',border:`1px solid ${T.border}`}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+                    <div style={{fontSize:15,fontWeight:600,color:'#f5c842'}}>{v.name}</div>
+                    <div style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:`${rc[v.rarity]||T.accent}18`,color:rc[v.rarity]||T.accent}}>{v.rarity}</div>
                   </div>
-                  <div style={{fontSize:'12px',color:'#a7d9ba',lineHeight:'1.6',marginBottom:'6px'}}>{v.flavor}</div>
-                  <div style={{display:'flex',gap:'12px',fontSize:'11px',color:'#2d7a4a'}}>
-                    <span>🎨 {v.color}</span>
-                    <span>🌸 {v.dominant_flower}</span>
+                  <p style={{margin:'0 0 6px',fontSize:13,color:T.muted,lineHeight:1.6}}>{v.flavor}</p>
+                  <div style={{display:'flex',gap:14,fontSize:11,color:T.dim}}>
+                    <span>{v.color}</span><span>via {v.dominant_flower}</span>
                   </div>
                 </div>
               ))}
-              {result.harvest_timing&&(
-                <div style={{fontSize:'11px',color:'#f5a623',padding:'8px 12px',
-                  background:'#2d1b0030',borderRadius:'8px',border:'1px solid #f5a62320'}}>
-                  ⏱ {result.harvest_timing}
-                </div>
-              )}
-              <button onClick={predict} style={{background:'none',border:'1px solid #1a4a2e',
-                borderRadius:'8px',color:'#2d7a4a',padding:'6px',cursor:'pointer',fontSize:'11px'}}>
-                Regenerate Prediction
-              </button>
+              {result.harvest_timing&&<div style={{fontSize:12,color:T.amber,padding:'8px 12px',background:`${T.amber}10`,borderRadius:8,border:`1px solid ${T.amber}20`}}>Harvest window: {result.harvest_timing}</div>}
+              <button onClick={predict} style={{background:'none',border:`1px solid ${T.border2}`,borderRadius:8,color:T.muted,padding:'6px',cursor:'pointer',fontSize:12}}>Regenerate</button>
             </div>
           )}
           {!loading&&!result&&(
-            <div style={{paddingTop:'12px',textAlign:'center'}}>
-              <button onClick={predict} style={{background:'#f5a623',border:'none',borderRadius:'8px',
-                color:'#060f0a',padding:'8px 20px',cursor:'pointer',fontSize:'13px',fontWeight:'700'}}>
-                Predict My Honey
-              </button>
+            <div style={{paddingTop:14,textAlign:'center'}}>
+              <button onClick={predict} style={{background:T.amber,border:'none',borderRadius:10,color:'#0b1410',padding:'9px 24px',cursor:'pointer',fontSize:13,fontWeight:700}}>Predict My Honey</button>
             </div>
           )}
         </div>
@@ -218,7 +199,7 @@ Predict the honey varieties a beekeeper would likely harvest. Return JSON:
   );
 }
 
-// ── Community Reports Tab ────────────────────────────────────────────────────
+// ── Community Tab ────────────────────────────────────────────────────────────
 function CommunityTab(){
   const[reports,setReports]=useState([]);
   const[loading,setLoading]=useState(true);
@@ -230,104 +211,71 @@ function CommunityTab(){
   const loadReports=async()=>{
     setLoading(true);
     try{
-      const r=await fetch(
-        `${SUPABASE_URL}/rest/v1/reports?order=ts.desc&limit=50`,
-        {headers:sbHeaders()}
-      );
-      if(r.ok) setReports(await r.json());
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/reports?order=ts.desc&limit=50`,{headers:sbHeaders()});
+      if(r.ok)setReports(await r.json());
     }catch{}
     setLoading(false);
   };
-
   useEffect(()=>{loadReports();},[]);
 
   const submit=async()=>{
-    if(!form.species.trim()||!form.location.trim()){
-      setError('Species and location are required.');return;
-    }
+    if(!form.species.trim()||!form.location.trim()){setError('Species and location required.');return;}
     setError('');setSubmitting(true);
-    if(!SUPABASE_URL||!SUPABASE_KEY){
-      setError('Supabase not configured — check your environment variables.');
-      setSubmitting(false);return;
-    }
+    if(!SUPABASE_URL||!SUPABASE_KEY){setError('Supabase not configured.');setSubmitting(false);return;}
     try{
-      const r=await fetch(`${SUPABASE_URL}/rest/v1/reports`,{
-        method:'POST',
-        headers:{...sbHeaders(),'Prefer':'return=minimal'},
-        body:JSON.stringify({...form,ts:Date.now()}),
-      });
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/reports`,{method:'POST',
+        headers:{...sbHeaders(),'Prefer':'return=minimal'},body:JSON.stringify({...form,ts:Date.now()})});
       if(r.ok||r.status===201){
         setForm({species:'',status:'blooming',location:'',note:''});
-        setSubmitted(true);
-        setTimeout(()=>setSubmitted(false),3000);
+        setSubmitted(true);setTimeout(()=>setSubmitted(false),3000);
         await loadReports();
-      } else {
-        const txt=await r.text();
-        setError(`Supabase error ${r.status}: ${txt}`);
-      }
+      }else{const t=await r.text();setError(`Error ${r.status}: ${t}`);}
     }catch(e){setError(`Connection error: ${e.message}`);}
     setSubmitting(false);
   };
 
-  const stColor={blooming:'#4ade80',opening:'#2dd4bf',fading:'#fb923c','not yet':'#818cf8'};
-  const inp={background:'#0d2014',border:'1px solid #1a4a2e',borderRadius:'8px',color:'#c9e8d4',
-    padding:'8px 12px',fontSize:'13px',outline:'none',width:'100%',boxSizing:'border-box'};
+  const stC={blooming:T.accent,opening:'#2dd4bf',fading:'#fb923c','not yet':'#a78bfa'};
+  const inp={background:T.bg,border:`1px solid ${T.border2}`,borderRadius:10,color:T.text,
+    padding:'10px 14px',fontSize:13,outline:'none',width:'100%',boxSizing:'border-box',fontFamily:'inherit'};
 
   return(
-    <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
-      {/* Submit form */}
-      <div style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px'}}>
-        <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700',letterSpacing:'0.05em',marginBottom:'12px'}}>
-          📍 LOG A SIGHTING
-        </div>
-        <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-          <input style={inp} placeholder="Species (e.g. Black Locust, Wild Violet…)"
-            value={form.species} onChange={e=>setForm(f=>({...f,species:e.target.value}))}/>
-          <select style={{...inp,cursor:'pointer'}} value={form.status}
-            onChange={e=>setForm(f=>({...f,status:e.target.value}))}>
+    <div style={{display:'flex',flexDirection:'column',gap:12}}>
+      <div style={{background:T.surf,borderRadius:16,padding:18,border:`1px solid ${T.border}`}}>
+        <div style={{fontSize:11,color:T.muted,fontWeight:600,letterSpacing:'0.07em',marginBottom:14,textTransform:'uppercase'}}>Log a Sighting</div>
+        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+          <input style={inp} placeholder="Species (e.g. Black Locust, Wild Violet…)" value={form.species} onChange={e=>setForm(f=>({...f,species:e.target.value}))}/>
+          <select style={{...inp,cursor:'pointer'}} value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}>
             <option value="blooming">Blooming</option>
             <option value="opening">Just Opening</option>
             <option value="fading">Fading</option>
             <option value="not yet">Not Yet</option>
           </select>
-          <input style={inp} placeholder="Your location (e.g. Hudson Valley, NY)"
-            value={form.location} onChange={e=>setForm(f=>({...f,location:e.target.value}))}/>
-          <textarea style={{...inp,resize:'none',height:'60px'}} placeholder="Note (optional) — bee activity, density, conditions…"
-            value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))}/>
-          {error&&<div style={{fontSize:'12px',color:'#ef4444',marginTop:'4px'}}>{error}</div>}
+          <input style={inp} placeholder="Your location (e.g. Hudson Valley, NY)" value={form.location} onChange={e=>setForm(f=>({...f,location:e.target.value}))}/>
+          <textarea style={{...inp,resize:'none',height:64}} placeholder="Notes — bee activity, density, conditions (optional)" value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))}/>
+          {error&&<div style={{fontSize:12,color:'#ef4444'}}>{error}</div>}
           <button onClick={submit} disabled={submitting}
-            style={{background:submitted?'#1a4a2e':'#f5a623',color:submitted?'#4ade80':'#060f0a',
-              border:'none',borderRadius:'8px',padding:'9px',fontWeight:'700',cursor:'pointer',fontSize:'13px'}}>
-            {submitted?'✓ Sighting Logged!':submitting?'Submitting…':'Submit Sighting'}
+            style={{background:submitted?T.surf2:T.accent,color:submitted?T.accent:'#0b1410',
+              border:`1px solid ${submitted?T.accent+'40':'transparent'}`,borderRadius:10,
+              padding:'10px',fontWeight:700,cursor:'pointer',fontSize:13,fontFamily:'inherit'}}>
+            {submitted?'✓ Sighting Logged':submitting?'Submitting…':'Submit Sighting'}
           </button>
         </div>
       </div>
 
-      {/* Reports feed */}
-      <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700',letterSpacing:'0.05em'}}>
-        COMMUNITY SIGHTINGS
-      </div>
-      {loading&&<div style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px',color:'#2d7a4a',fontSize:'13px'}}>Loading reports…</div>}
-                {loading&&<div style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px',color:'#2d7a4a',fontSize:'13px'}}>Loading community reports…</div>}
+      <div style={{fontSize:11,color:T.muted,fontWeight:600,letterSpacing:'0.07em',textTransform:'uppercase',paddingLeft:4}}>Community Sightings</div>
+      {loading&&<div style={{background:T.surf,borderRadius:16,padding:18,color:T.dim,fontSize:13,border:`1px solid ${T.border}`}}>Loading…</div>}
       {!loading&&reports.length===0&&(
-        <div style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px',
-          color:'#2d5a3d',fontSize:'13px',textAlign:'center'}}>
-          No sightings yet — be the first to log one above.
-        </div>
+        <div style={{background:T.surf,borderRadius:16,padding:24,color:T.dim,fontSize:13,textAlign:'center',border:`1px solid ${T.border}`}}>No sightings yet — be the first.</div>
       )}
       {!loading&&reports.map((r,i)=>(
-        <div key={i} style={{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'12px 14px'}}>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'4px'}}>
-            <div style={{fontSize:'14px',fontWeight:'600',color:'#c9e8d4'}}>{r.species}</div>
-            <div style={{fontSize:'10px',padding:'2px 7px',borderRadius:'4px',
-              background:(stColor[r.status]||'#4ade80')+'18',color:stColor[r.status]||'#4ade80',fontWeight:'600',flexShrink:0,marginLeft:'8px'}}>
-              {r.status}
-            </div>
+        <div key={i} style={{background:T.surf,borderRadius:14,padding:'14px 16px',border:`1px solid ${T.border}`}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:4}}>
+            <div style={{fontSize:14,fontWeight:600,color:T.text}}>{r.species}</div>
+            <div style={{fontSize:11,padding:'2px 8px',borderRadius:99,
+              background:`${stC[r.status]||T.accent}15`,color:stC[r.status]||T.accent,flexShrink:0,marginLeft:8}}>{r.status}</div>
           </div>
-          <div style={{fontSize:'11px',color:'#2d7a4a',marginBottom:r.note?'6px':'0'}}>
-            📍 {r.location} · {new Date(r.ts).toLocaleDateString()}
-          </div>
-          {r.note&&<div style={{fontSize:'12px',color:'#6ab890',fontStyle:'italic'}}>{r.note}</div>}
+          <div style={{fontSize:12,color:T.dim}}>📍 {r.location} · {new Date(r.ts).toLocaleDateString()}</div>
+          {r.note&&<p style={{margin:'6px 0 0',fontSize:13,color:T.muted,lineHeight:1.5}}>{r.note}</p>}
         </div>
       ))}
     </div>
@@ -344,16 +292,10 @@ function SpeciesDetail({sp,onBack}){
 
   const load=useCallback(()=>{
     setLoading(true);setInfo(null);setError(false);
-    fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",headers:{...apiHeaders()},
-      body:JSON.stringify({
-        model:"claude-sonnet-4-20250514",max_tokens:900,
+    fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{...apiHeaders()},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:900,
         system:"You are a botanist and beekeeping expert. Respond with a single raw JSON object only. No markdown. Begin with { and end with }.",
-        messages:[{role:"user",content:
-          `Return a JSON profile for ${sp.name} (${sp.inat}) with keys: description (2-3 sentence botanical description), habitat (1-2 sentences), beekeeping (2-3 sentences on nectar quality and hive impact), did_you_know (one surprising fact), peak_tip (one practical field tip).`
-        }]
-      })
-    })
+        messages:[{role:"user",content:`JSON profile for ${sp.name} (${sp.inat}). Keys: description, habitat, beekeeping, did_you_know, peak_tip.`}]})})
     .then(r=>r.json())
     .then(d=>{
       const raw=d.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'';
@@ -361,86 +303,114 @@ function SpeciesDetail({sp,onBack}){
       try{p=JSON.parse(raw.trim());}catch{}
       if(!p)try{p=JSON.parse(raw.replace(/```[\w]*/g,'').replace(/```/g,'').trim());}catch{}
       if(!p){const m=raw.match(/\{[\s\S]*\}/);if(m)try{p=JSON.parse(m[0]);}catch{}}
-      if(p){setInfo(p);setError(false);}else setError(true);
+      if(p){setInfo(p);}else setError(true);
     })
     .catch(()=>setError(true))
     .finally(()=>setLoading(false));
   },[sp.id]);
-
   useEffect(()=>{load();},[load]);
 
-  const card={background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px'};
-  const lbl={fontSize:'10px',color:'#2d7a4a',fontWeight:'700',letterSpacing:'0.06em',marginBottom:'6px'};
+  const Card=({children,style={}})=>(
+    <div style={{background:T.surf,border:`1px solid ${T.border}`,borderRadius:16,padding:'16px 18px',...style}}>{children}</div>
+  );
+  const Label=({children,color=T.muted})=>(
+    <div style={{fontSize:10,color,fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:8}}>{children}</div>
+  );
 
   return(
-    <div style={{background:'#060f0a',minHeight:'100vh',color:'#c9e8d4',fontFamily:'system-ui,sans-serif'}}>
-      <div style={{background:'#0a1f14',borderBottom:'1px solid #1a4a2e',padding:'12px 16px',display:'flex',alignItems:'center',gap:'12px'}}>
-        <button onClick={onBack} style={{background:'#1a4a2e',border:'none',borderRadius:'8px',color:'#4ade80',padding:'6px 14px',cursor:'pointer',fontSize:'13px',fontWeight:'600'}}>← Back</button>
+    <div style={{background:T.bg,minHeight:'100vh',color:T.text,fontFamily:'system-ui,sans-serif'}}>
+      <div style={{background:T.surf,borderBottom:`1px solid ${T.border}`,padding:'12px 16px',display:'flex',alignItems:'center',gap:12}}>
+        <button onClick={onBack} style={{background:T.surf2,border:`1px solid ${T.border2}`,borderRadius:10,
+          color:T.accent,padding:'6px 14px',cursor:'pointer',fontSize:13,fontWeight:600,fontFamily:'inherit'}}>← Back</button>
         <div>
-          <div style={{fontSize:'16px',fontWeight:'800',color:'#e8f8f0'}}>{sp.name}</div>
-          <div style={{fontSize:'11px',color:'#4a7c5e',fontStyle:'italic'}}>{sp.inat}</div>
+          <div style={{fontSize:17,fontWeight:700,color:T.text,letterSpacing:-0.3}}>{sp.name}</div>
+          <div style={{fontSize:12,color:T.muted,fontStyle:'italic'}}>{sp.inat}</div>
         </div>
       </div>
-      <div style={{maxWidth:'580px',margin:'0 auto',padding:'14px',display:'flex',flexDirection:'column',gap:'12px'}}>
-        <div style={{borderRadius:'14px',overflow:'hidden',position:'relative'}}>
-          <Banner query={sp.inat} color={sp.c} height={200}/>
-          <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 40%,#060f0aee 100%)'}}/>
-          <div style={{position:'absolute',bottom:'14px',left:'16px',right:'16px',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
-            <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
-              <div style={{padding:'4px 10px',borderRadius:'6px',fontSize:'11px',background:ss.bg,color:ss.tc,fontWeight:'600'}}>{ss.label}</div>
-              <div style={{padding:'4px 10px',borderRadius:'6px',fontSize:'11px',background:'#0008',color:ti.c,fontWeight:'600'}}>{ti.label}</div>
+
+      <div style={{maxWidth:580,margin:'0 auto',padding:14,display:'flex',flexDirection:'column',gap:12}}>
+        {/* Hero */}
+        <div style={{borderRadius:20,overflow:'hidden',position:'relative'}}>
+          <Banner query={sp.inat} color={sp.c} height={220}/>
+          <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 35%,rgba(245,242,234,0.97) 100%)'}}/>
+          <div style={{position:'absolute',bottom:16,left:18,right:18,display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+            <div style={{display:'flex',gap:6}}>
+              <div style={{padding:'4px 10px',borderRadius:99,fontSize:11,background:ss.bg,color:ss.tc,fontWeight:600}}>{ss.label}</div>
+              <div style={{padding:'4px 10px',borderRadius:99,fontSize:11,background:'rgba(255,255,255,0.7)',color:ti.c,fontWeight:600}}>{ti.label}</div>
             </div>
-            <div style={{padding:'4px 10px',borderRadius:'6px',fontSize:'11px',background:'#0008',color:fc,fontWeight:'700'}}>Nectar {sp.ns}/10</div>
+            <div style={{fontSize:13,fontWeight:700,color:fc}}>Nectar {sp.ns}/10</div>
           </div>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px'}}>
-          {[[sp.ns+'/10','Nectar Score',fc],[sp.pm.length,'Bloom Months','#4ade80'],[sp.pm.map(m=>MO[m-1][0]).join(''),'Season','#818cf8']].map(([v,l,c])=>(
-            <div key={l} style={{...card,textAlign:'center',padding:'12px 8px'}}>
-              <div style={{fontSize:'22px',fontWeight:'800',color:c,lineHeight:1}}>{v}</div>
-              <div style={{fontSize:'10px',color:'#2d7a4a',marginTop:'4px'}}>{l}</div>
+
+        {/* Stats */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8}}>
+          {[[sp.ns+'/10','Nectar',fc],[sp.pm.length,'Bloom months',T.accent],[sp.pm.map(m=>MO[m-1][0]).join(''),'Season','#a78bfa']].map(([v,l,c])=>(
+            <div key={l} style={{background:T.surf,border:`1px solid ${T.border}`,borderRadius:14,padding:'14px 10px',textAlign:'center'}}>
+              <div style={{fontSize:24,fontWeight:300,color:c,letterSpacing:-1,lineHeight:1}}>{v}</div>
+              <div style={{fontSize:11,color:T.muted,marginTop:5}}>{l}</div>
             </div>
           ))}
         </div>
-        <div style={card}>
-          <div style={lbl}>BLOOM SEASON</div>
-          <div style={{display:'flex',gap:'3px',marginBottom:'6px'}}>
+
+        {/* Timeline */}
+        <Card>
+          <Label>Bloom Season</Label>
+          <div style={{display:'flex',gap:3}}>
             {Array.from({length:12},(_,i)=>i+1).map(m=>(
-              <div key={m} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:'3px'}}>
-                <div style={{width:'100%',height:'10px',borderRadius:'2px',background:sp.pm.includes(m)?sp.c:'#0d2014',
-                  opacity:sp.pm.includes(m)?(m===NOW_M?1:0.6):1,outline:m===NOW_M?'1px solid #f5a62360':'none'}}/>
-                <div style={{fontSize:'8px',color:m===NOW_M?'#f5a623':'#2d5a3d'}}>{MO_S[m-1]}</div>
+              <div key={m} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+                <div style={{width:'100%',height:8,borderRadius:99,
+                  background:sp.pm.includes(m)?sp.c:T.surf2,
+                  opacity:sp.pm.includes(m)?(m===NOW_M?1:0.55):1,
+                  outline:m===NOW_M?`2px solid ${T.amber}40`:'none'}}/>
+                <div style={{fontSize:8,color:m===NOW_M?T.amber:T.dim}}>{MO_S[m-1]}</div>
               </div>
             ))}
           </div>
-          <div style={{fontSize:'11px',color:'#2d7a4a'}}>Peak: <span style={{color:'#8ab8a0'}}>{sp.pm.map(m=>MO[m-1]).join(', ')}</span></div>
-        </div>
+        </Card>
+
+        {/* Nectar bar */}
+        <Card>
+          <Label>Nectar Value</Label>
+          <div style={{background:T.bg,borderRadius:99,height:6,overflow:'hidden',marginBottom:8}}>
+            <div style={{height:'100%',borderRadius:99,width:`${(sp.ns/10)*100}%`,background:`linear-gradient(90deg,${fc}60,${fc})`,transition:'width 1s ease'}}/>
+          </div>
+          <div style={{fontSize:12,color:T.muted}}>
+            {sp.ns>=9?'Exceptional producer — a primary nectar source for bees'
+            :sp.ns>=7?'Strong source — reliable contribution to hive production'
+            :sp.ns>=5?'Moderate value — good supplemental forage'
+            :'Lower yield — valuable for pollen diversity'}
+          </div>
+        </Card>
+
         {loading&&(
-          <div style={{...card,display:'flex',flexDirection:'column',gap:'14px'}}>
-            {['DESCRIPTION','HABITAT','BEEKEEPING NOTES'].map(l=>(
-              <div key={l}>
-                <div style={lbl}>{l}</div>
-                <div style={{height:'12px',borderRadius:'4px',background:'#1a4a2e',opacity:0.5,animation:'pulse 1.4s ease-in-out infinite',marginBottom:'6px'}}/>
-                <div style={{height:'12px',borderRadius:'4px',background:'#1a4a2e',opacity:0.3,width:'70%',animation:'pulse 1.4s ease-in-out infinite'}}/>
+          <Card>
+            {['Description','Habitat','Beekeeping'].map(l=>(
+              <div key={l} style={{marginBottom:16}}>
+                <div style={{fontSize:10,color:T.dim,fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:8}}>{l}</div>
+                <div style={{height:11,borderRadius:6,background:T.surf2,marginBottom:6,animation:'pulse 1.6s ease-in-out infinite'}}/>
+                <div style={{height:11,borderRadius:6,background:T.surf2,width:'70%',animation:'pulse 1.6s ease-in-out infinite'}}/>
               </div>
             ))}
-          </div>
+          </Card>
         )}
+
         {!loading&&error&&(
-          <div style={{...card,textAlign:'center'}}>
-            <div style={{color:'#4a7c5e',fontSize:'13px',marginBottom:'12px'}}>Failed to load species details.</div>
-            <button onClick={load} style={{background:'#1a4a2e',border:'1px solid #2d7a4a',borderRadius:'8px',color:'#4ade80',padding:'8px 18px',cursor:'pointer',fontSize:'13px',fontWeight:'600'}}>Try Again</button>
-          </div>
+          <Card style={{textAlign:'center'}}>
+            <div style={{color:T.muted,fontSize:13,marginBottom:12}}>Failed to load species details.</div>
+            <button onClick={load} style={{background:T.surf2,border:`1px solid ${T.border2}`,borderRadius:10,color:T.accent,padding:'8px 18px',cursor:'pointer',fontSize:13,fontWeight:600,fontFamily:'inherit'}}>Try Again</button>
+          </Card>
         )}
+
         {!loading&&info&&(
-          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
-            <div style={card}><div style={lbl}>DESCRIPTION</div><p style={{margin:0,fontSize:'13px',lineHeight:'1.7',color:'#a7d9ba'}}>{info.description}</p></div>
-            <div style={card}><div style={lbl}>HABITAT</div><p style={{margin:0,fontSize:'13px',lineHeight:'1.7',color:'#a7d9ba'}}>{info.habitat}</p></div>
-            <div style={{...card,borderColor:'#2d7a4a',background:'#071a10'}}>
-              <div style={{...lbl,color:'#f5a623'}}>🐝 BEEKEEPING NOTES</div>
-              <p style={{margin:0,fontSize:'13px',lineHeight:'1.7',color:'#c9e8d4'}}>{info.beekeeping}</p>
-            </div>
-            <div style={card}><div style={lbl}>FIELD TIP</div><p style={{margin:0,fontSize:'13px',lineHeight:'1.7',color:'#a7d9ba'}}>{info.peak_tip}</p></div>
-            <div style={{...card,borderStyle:'dashed'}}><div style={lbl}>DID YOU KNOW</div><p style={{margin:0,fontSize:'13px',lineHeight:'1.7',color:'#6ab890',fontStyle:'italic'}}>{info.did_you_know}</p></div>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            <Card><Label>Description</Label><p style={{margin:0,fontSize:13,lineHeight:1.7,color:T.muted}}>{info.description}</p></Card>
+            <Card><Label>Habitat</Label><p style={{margin:0,fontSize:13,lineHeight:1.7,color:T.muted}}>{info.habitat}</p></Card>
+            <Card style={{borderColor:`${T.accent}40`,background:'#f0f7f2'}}>
+              <Label color={T.amber}>🐝 Beekeeping Notes</Label>
+              <p style={{margin:0,fontSize:13,lineHeight:1.7,color:T.text}}>{info.beekeeping}</p>
+            </Card>
+            <Card><Label>Field Tip</Label><p style={{margin:0,fontSize:13,lineHeight:1.7,color:T.muted}}>{info.peak_tip}</p></Card>
+            <Card style={{borderStyle:'dashed'}}><Label>Did You Know</Label><p style={{margin:0,fontSize:13,lineHeight:1.7,color:T.muted,fontStyle:'italic'}}>{info.did_you_know}</p></Card>
           </div>
         )}
       </div>
@@ -459,24 +429,24 @@ function BloomRadar({month,hiveName}){
   return(
     <svg width="260" height="260" viewBox="0 0 260 260" style={{display:'block',margin:'0 auto'}}>
       <defs><radialGradient id="rbg" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stopColor="#0d2b1a"/><stop offset="100%" stopColor="#060f0a"/>
+        <stop offset="0%" stopColor="#e8f0e8"/><stop offset="100%" stopColor="#f5f2ea"/>
       </radialGradient></defs>
-      <circle cx="130" cy="130" r="127" fill="url(#rbg)" stroke="#1a4a2e" strokeWidth="1"/>
-      {[40,75,110].map(r=><circle key={r} cx="130" cy="130" r={r} fill="none" stroke="#1e5c35" strokeWidth="0.5" strokeDasharray="3,5"/>)}
-      <line x1="130" y1="12" x2="130" y2="248" stroke="#1e5c35" strokeWidth="0.5" opacity="0.4"/>
-      <line x1="12" y1="130" x2="248" y2="130" stroke="#1e5c35" strokeWidth="0.5" opacity="0.4"/>
-      <text x="133" y="94" fill="#2d7a4a" fontSize="8">1 mi</text>
-      <text x="133" y="58" fill="#2d7a4a" fontSize="8">2 mi</text>
+      <circle cx="130" cy="130" r="127" fill="url(#rbg)" stroke={T.border} strokeWidth="1"/>
+      {[40,75,110].map(r=><circle key={r} cx="130" cy="130" r={r} fill="none" stroke={T.border2} strokeWidth="0.5" strokeDasharray="3,6"/>)}
+      <line x1="130" y1="12" x2="130" y2="248" stroke={T.border} strokeWidth="0.5"/>
+      <line x1="12" y1="130" x2="248" y2="130" stroke={T.border} strokeWidth="0.5"/>
+      <text x="133" y="93" fill={T.dim} fontSize="8" fontFamily="system-ui">1 mi</text>
+      <text x="133" y="57" fill={T.dim} fontSize="8" fontFamily="system-ui">2 mi</text>
       {dots.map((d,i)=>(
         <g key={i}>
-          <circle cx={d.x} cy={d.y} r={d.sz+8} fill={d.c} opacity={d.isActive?0.08:0.03}/>
-          <circle cx={d.x} cy={d.y} r={d.sz+3} fill={d.c} opacity={d.isActive?0.18:0.07}/>
-          <circle cx={d.x} cy={d.y} r={d.sz} fill={d.c} opacity={d.isActive?0.82:0.28}/>
+          <circle cx={d.x} cy={d.y} r={d.sz+9} fill={d.c} opacity={d.isActive?0.07:0.02}/>
+          <circle cx={d.x} cy={d.y} r={d.sz+4} fill={d.c} opacity={d.isActive?0.16:0.05}/>
+          <circle cx={d.x} cy={d.y} r={d.sz} fill={d.c} opacity={d.isActive?0.85:0.25}/>
         </g>
       ))}
-      <circle cx="130" cy="130" r="13" fill="#f5a623" opacity="0.95"/>
-      <text x="130" y="133.5" textAnchor="middle" fontSize="12" dominantBaseline="middle">🐝</text>
-      {hiveName&&<text x="130" y="150" textAnchor="middle" fontSize="7" fill="#f5a623" opacity="0.8">{hiveName}</text>}
+      <circle cx="130" cy="130" r="14" fill={T.amber} opacity="0.95"/>
+      <text x="130" y="134" textAnchor="middle" fontSize="14" dominantBaseline="middle">🐝</text>
+      {hiveName&&<text x="130" y="152" textAnchor="middle" fontSize="7" fill={T.amber} opacity="0.75" fontFamily="system-ui">{hiveName}</text>}
     </svg>
   );
 }
@@ -493,37 +463,29 @@ export default function App(){
   const[locBloom,setLocBloom]=useState(null);
   const[locLoad,setLocLoad]=useState(false);
   const[selected,setSelected]=useState(null);
-  const[hive,setHive]=useState(null); // {name, location}
+  const[hive,setHive]=useState(null);
   const[hiveInput,setHiveInput]=useState('');
   const[showHiveForm,setShowHiveForm]=useState(false);
 
-  // Load saved hive from storage
   useEffect(()=>{
-    window.storage?.get('bc-hive').then(r=>{
-      if(r) setHive(JSON.parse(r.value));
-    }).catch(()=>{});
+    try{const s=localStorage.getItem('bc-hive');if(s)setHive(JSON.parse(s));}catch{}
   },[]);
 
-  const saveHive=async()=>{
-    if(!hiveInput.trim()) return;
+  const saveHive=()=>{
+    if(!hiveInput.trim())return;
     const h={name:hiveInput.trim(),saved:Date.now()};
-    await window.storage?.set('bc-hive',JSON.stringify(h)).catch(()=>{});
-    setHive(h); setHiveInput(''); setShowHiveForm(false);
-    // Auto-set as location
-    setLocation(h.name);
-    fetchBrief(h.name);
-    fetchLocSpecies(h.name);
+    try{localStorage.setItem('bc-hive',JSON.stringify(h));}catch{}
+    setHive(h);setHiveInput('');setShowHiveForm(false);
+    setLocation(h.name);fetchBrief(h.name);fetchLocSpecies(h.name);
   };
 
   const fetchBrief=useCallback(async loc=>{
     setBriefLoad(true);setBrief('');
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",headers:{...apiHeaders()},
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{...apiHeaders()},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
           system:"You are BloomCast. Write in flowing prose, no bullets. Be regionally specific.",
-          messages:[{role:"user",content:`Bloom briefing for ${loc}, April 4 2026. 4–5 sentences: blooming now, nectar flow next 2–3 weeks, one beekeeper tip, seasonal outlook.`}]})
-      });
+          messages:[{role:"user",content:`Bloom briefing for ${loc}, April 4 2026. 4–5 sentences: blooming now, nectar flow next 2–3 weeks, one beekeeper tip, seasonal outlook.`}]})});
       const d=await res.json();
       setBrief(d.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'Unable to generate.');
     }catch{setBrief('Connection error.');}finally{setBriefLoad(false);}
@@ -532,14 +494,12 @@ export default function App(){
   const fetchLocSpecies=useCallback(async loc=>{
     setLocLoad(true);setLocBloom(null);
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",headers:{...apiHeaders()},
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{...apiHeaders()},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:900,
           system:"Return ONLY valid JSON — no markdown, no backticks.",
           messages:[{role:"user",content:`Region "${loc}", April 4 2026. JSON:
 "blooming":[{name,inat,nectar(1-10),type,color(hex),status("blooming"|"opening"|"fading")}]
-"upcoming":[names] — 5-9 blooming, 3-5 upcoming. JSON only.`}]})
-      });
+"upcoming":[names] 5-9 blooming, 3-5 upcoming. JSON only.`}]})});
       const d=await res.json();
       const raw=d.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'';
       setLocBloom(JSON.parse(raw.replace(/```[\w]*/g,'').replace(/```/g,'').trim()));
@@ -552,142 +512,155 @@ export default function App(){
   };
 
   const resolveToSP=s=>SP.find(sp=>sp.name.toLowerCase()===s.name?.toLowerCase())
-    ||{...SP[2],...s,c:s.color||s.c||'#88aabb',ns:s.nectar||5};
+    ||{...SP[2],...s,c:s.color||s.c||'#4dd892',ns:s.nectar||5};
 
   const bloomNow=SP.filter(s=>s.pm.includes(NOW_M));
-  const upcoming=SP.filter(s=>s.pm.includes(NOW_M+1)&&!s.pm.includes(NOW_M));
+  const upcomingSP=SP.filter(s=>s.pm.includes(NOW_M+1)&&!s.pm.includes(NOW_M));
   const dBloom=locBloom?locBloom.blooming:bloomNow;
-  const dUpcoming=locBloom?locBloom.upcoming:upcoming.map(s=>s.name);
+  const dUpcoming=locBloom?locBloom.upcoming:upcomingSP.map(s=>s.name);
   const avgNec=dBloom.length?Math.round(dBloom.reduce((a,b)=>a+(b.ns||b.nectar||0),0)/dBloom.length*10)/10:0;
   const[flowLabel,flowColor]=flowInfo(avgNec);
   const filtered=typeFilter==='all'?SP:SP.filter(s=>s.type===typeFilter);
 
-  const C={
-    wrap:{background:'#060f0a',minHeight:'100vh',color:'#c9e8d4',fontFamily:'system-ui,sans-serif'},
-    hdr:{background:'#0a1f14',borderBottom:'1px solid #1a4a2e',padding:'12px 16px'},
-    card:{background:'#0a1f14',border:'1px solid #1a4a2e',borderRadius:'12px',padding:'14px'},
-    inp:{background:'#0d2014',border:'1px solid #2d7a4a',borderRadius:'8px',color:'#c9e8d4',padding:'8px 12px',fontSize:'14px',outline:'none',flex:1},
-    btn:{background:'#f5a623',color:'#060f0a',border:'none',borderRadius:'8px',padding:'8px 16px',fontWeight:'700',cursor:'pointer',fontSize:'13px',whiteSpace:'nowrap'},
-    tab:a=>({padding:'7px 10px',borderRadius:'6px',border:'none',cursor:'pointer',fontSize:'11px',background:a?'#1a4a2e':'transparent',color:a?'#4ade80':'#4a7c5e',fontWeight:a?'600':'400',whiteSpace:'nowrap'}),
-  };
-
   if(selected) return <SpeciesDetail sp={selected} onBack={()=>setSelected(null)}/>;
 
   return(
-    <div style={C.wrap}>
-      <style>{`@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.85}} .spc:hover{opacity:0.8}`}</style>
+    <div style={{background:T.bg,minHeight:'100vh',color:T.text,fontFamily:'system-ui,sans-serif'}}>
+      <style>{`@keyframes pulse{0%,100%{opacity:.25}50%{opacity:.7}} .spc{transition:transform 0.15s,opacity 0.15s} .spc:hover{opacity:0.82;transform:translateY(-1px)}`}</style>
 
-      <div style={C.hdr}>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'10px'}}>
+      {/* ── Header ── */}
+      <div style={{background:T.surf,borderBottom:`1px solid ${T.border}`,padding:'12px 16px'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
           <div>
-            <span style={{fontSize:'18px',fontWeight:'800',color:'#4ade80',letterSpacing:'-0.5px'}}>🌿 BloomCast</span>
-            <span style={{fontSize:'11px',color:'#2d7a4a',marginLeft:'8px'}}>Bloom & Nectar Intelligence</span>
+            <div style={{fontSize:20,fontWeight:700,color:T.text,letterSpacing:-0.5,lineHeight:1}}>🌿 BloomCast</div>
+            <div style={{fontSize:11,color:T.muted,marginTop:2}}>Bloom & Nectar Intelligence</div>
           </div>
-          {/* Hive pin button */}
-          <button onClick={()=>setShowHiveForm(v=>!v)}
-            style={{background:hive?'#1a4a2e':'#0d2014',border:'1px solid #2d7a4a',borderRadius:'8px',
-              color:hive?'#f5a623':'#4a7c5e',padding:'5px 10px',cursor:'pointer',fontSize:'11px',whiteSpace:'nowrap'}}>
-            📍 {hive?hive.name:'Set Hive'}
-          </button>
+          <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
+            <button onClick={()=>setShowHiveForm(v=>!v)}
+              style={{background:hive?`${T.amber}18`:'transparent',border:`1px solid ${hive?T.amber+'40':T.border2}`,
+                borderRadius:99,color:hive?T.amber:T.muted,padding:'4px 12px',cursor:'pointer',fontSize:11,fontWeight:600,fontFamily:'inherit'}}>
+              📍 {hive?hive.name:'Set Hive'}
+            </button>
+            <div style={{fontSize:10,color:T.dim}}>Apr 4, 2026 · Early Spring</div>
+          </div>
         </div>
 
-        {/* Hive form */}
         {showHiveForm&&(
-          <div style={{marginBottom:'10px',display:'flex',gap:'8px'}}>
-            <input style={{...C.inp,fontSize:'13px'}} placeholder="Hive name or location (e.g. Backyard NJ, Hudson Valley)"
-              value={hiveInput} onChange={e=>setHiveInput(e.target.value)}
-              onKeyDown={e=>e.key==='Enter'&&saveHive()}/>
-            <button style={{...C.btn,padding:'8px 12px'}} onClick={saveHive}>Save</button>
+          <div style={{display:'flex',gap:8,marginBottom:10}}>
+            <input style={{background:T.bg,border:`1px solid ${T.border2}`,borderRadius:10,color:T.text,
+              padding:'8px 12px',fontSize:13,outline:'none',flex:1,fontFamily:'inherit'}}
+              placeholder="Hive name or location…" value={hiveInput}
+              onChange={e=>setHiveInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&saveHive()}/>
+            <button style={{background:T.amber,color:'#0b1410',border:'none',borderRadius:10,padding:'8px 14px',fontWeight:700,cursor:'pointer',fontSize:13,fontFamily:'inherit'}} onClick={saveHive}>Save</button>
           </div>
         )}
 
-        <div style={{display:'flex',gap:'8px'}}>
-          <input style={C.inp} placeholder="Enter region (e.g. Central Virginia, Willamette Valley…)"
-            value={locInput} onChange={e=>setLocInput(e.target.value)}
-            onKeyDown={e=>e.key==='Enter'&&handleSubmit()}/>
-          <button style={C.btn} onClick={handleSubmit}>Brief Me</button>
+        <div style={{display:'flex',gap:8}}>
+          <input style={{background:T.bg,border:`1px solid ${T.border2}`,borderRadius:12,color:T.text,
+            padding:'10px 14px',fontSize:14,outline:'none',flex:1,fontFamily:'inherit'}}
+            placeholder="Enter region (e.g. Hudson Valley, Willamette Valley…)"
+            value={locInput} onChange={e=>setLocInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleSubmit()}/>
+          <button style={{background:T.accent,color:'#0b1410',border:'none',borderRadius:12,padding:'10px 18px',fontWeight:700,cursor:'pointer',fontSize:13,fontFamily:'inherit'}} onClick={handleSubmit}>Brief Me</button>
         </div>
       </div>
 
-      <div style={{display:'flex',gap:'2px',padding:'8px 12px',background:'#081510',borderBottom:'1px solid #1a4a2e',overflowX:'auto'}}>
-        {[['dashboard','📊 Dashboard'],['map','🗺 Radar'],['calendar','📅 Calendar'],['species','🌸 Species'],['community','🌿 Community']].map(([k,l])=>(
-          <button key={k} style={C.tab(tab===k)} onClick={()=>setTab(k)}>{l}</button>
+      {/* ── Tabs ── */}
+      <div style={{padding:'10px 14px',background:T.surf,borderBottom:`1px solid ${T.border}`,display:'flex',gap:4,overflowX:'auto'}}>
+        {[['dashboard','Dashboard'],['map','Radar'],['calendar','Calendar'],['species','Species'],['community','Community']].map(([k,l])=>(
+          <button key={k} onClick={()=>setTab(k)} style={{
+            padding:'7px 14px',borderRadius:99,border:'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',
+            background:tab===k?T.accent:'transparent',
+            color:tab===k?'#0b1410':T.muted,
+            fontWeight:tab===k?700:400,whiteSpace:'nowrap',transition:'all 0.15s'}}>
+            {l}
+          </button>
         ))}
       </div>
 
-      <div style={{padding:'14px',maxWidth:'580px',margin:'0 auto',display:'flex',flexDirection:'column',gap:'12px'}}>
+      <div style={{padding:14,maxWidth:580,margin:'0 auto',display:'flex',flexDirection:'column',gap:12}}>
 
+        {/* ── DASHBOARD ── */}
         {tab==='dashboard'&&(
-          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
-            <div style={C.card}>
-              <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700',letterSpacing:'0.05em',marginBottom:'8px'}}>
-                ✦ AI BLOOM BRIEFING {location&&<span style={{color:'#4a7c5e',fontWeight:'400'}}>· {location}</span>}
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+
+            {/* Weather-app hero: Nectar Index */}
+            <div style={{background:T.surf,borderRadius:20,padding:'22px 20px',border:`1px solid ${T.border}`,textAlign:'center'}}>
+              {location&&<div style={{fontSize:13,color:T.muted,marginBottom:2}}>{location}</div>}
+              <div style={{fontSize:72,fontWeight:200,color:flowColor,letterSpacing:-4,lineHeight:1}}>{avgNec}</div>
+              <div style={{fontSize:14,color:T.muted,marginBottom:16}}>Nectar Flow Index · <span style={{color:flowColor,fontWeight:600}}>{flowLabel}</span></div>
+              <div style={{background:T.bg,borderRadius:99,height:5,overflow:'hidden',maxWidth:280,margin:'0 auto 12px'}}>
+                <div style={{height:'100%',borderRadius:99,width:`${(avgNec/10)*100}%`,background:flowColor,transition:'width 1s ease'}}/>
               </div>
-              {briefLoad&&<div style={{color:'#2d7a4a',fontSize:'13px'}}>Querying phenology models…</div>}
-              {!briefLoad&&!brief&&<div style={{color:'#2d5a3d',fontSize:'13px',lineHeight:'1.6'}}>Enter your region above to generate a personalized bloom briefing.</div>}
-              {!briefLoad&&brief&&<div style={{fontSize:'13px',lineHeight:'1.7',color:'#a7d9ba'}}>{brief}</div>}
+              <div style={{fontSize:12,color:T.dim,lineHeight:1.5}}>{locLoad?'Loading…':dBloom.map(s=>s.name).join('  ·  ')}</div>
             </div>
 
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px'}}>
-              {[[locLoad?'…':dBloom.length,'Blooming Now','#4ade80'],[avgNec,'Nectar Index',flowColor],[locLoad?'…':dUpcoming.length,'Coming Soon','#818cf8']].map(([v,l,c])=>(
-                <div key={l} style={{...C.card,textAlign:'center',padding:'12px 8px'}}>
-                  <div style={{fontSize:'26px',fontWeight:'800',color:c,lineHeight:1}}>{v}</div>
-                  <div style={{fontSize:'10px',color:'#2d7a4a',marginTop:'4px'}}>{l}</div>
+            {/* Stats row */}
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8}}>
+              {[[locLoad?'…':dBloom.length,'Blooming Now',T.accent],[locLoad?'…':dUpcoming.length,'Coming Soon','#a78bfa'],['Apr','Season',T.amber]].map(([v,l,c])=>(
+                <div key={l} style={{background:T.surf,border:`1px solid ${T.border}`,borderRadius:14,padding:'14px 10px',textAlign:'center'}}>
+                  <div style={{fontSize:28,fontWeight:300,color:c,letterSpacing:-1,lineHeight:1}}>{v}</div>
+                  <div style={{fontSize:11,color:T.muted,marginTop:5}}>{l}</div>
                 </div>
               ))}
             </div>
 
-            <div style={C.card}>
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'11px'}}>
-                <span style={{color:'#2d7a4a',fontWeight:'700',letterSpacing:'0.05em'}}>NECTAR FLOW INDEX</span>
-                <span style={{color:flowColor,fontWeight:'700'}}>{flowLabel}</span>
+            {/* AI Brief */}
+            <div style={{background:T.surf,borderRadius:16,padding:'16px 18px',border:`1px solid ${T.border}`}}>
+              <div style={{fontSize:10,color:T.muted,fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:10}}>
+                AI Bloom Briefing {location&&<span style={{color:T.dim,fontWeight:400,textTransform:'none',letterSpacing:0}}>· {location}</span>}
               </div>
-              <div style={{background:'#060f0a',borderRadius:'99px',height:'7px',overflow:'hidden'}}>
-                <div style={{height:'100%',borderRadius:'99px',width:`${(avgNec/10)*100}%`,
-                  background:`linear-gradient(90deg,${flowColor}60,${flowColor})`,transition:'width 1s ease'}}/>
-              </div>
-              <div style={{marginTop:'8px',fontSize:'11px',color:'#2d5a3d',lineHeight:'1.5'}}>
-                {locLoad?'Loading…':dBloom.map(s=>s.name).join('  ·  ')}
-              </div>
+              {briefLoad&&(
+                <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                  {[95,80,88,65].map((w,i)=><div key={i} style={{height:11,borderRadius:6,background:T.surf2,width:`${w}%`,animation:'pulse 1.6s ease-in-out infinite'}}/>)}
+                </div>
+              )}
+              {!briefLoad&&!brief&&<div style={{fontSize:13,color:T.dim,lineHeight:1.65}}>Enter your region above to generate a personalized bloom briefing.</div>}
+              {!briefLoad&&brief&&<div style={{fontSize:13,lineHeight:1.7,color:T.muted}}>{brief}</div>}
             </div>
 
-            {/* Honey Predictor */}
+            {/* Honey predictor */}
             {dBloom.length>0&&<HoneyPredictor bloomingSpecies={dBloom} location={location}/>}
 
-            <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700',letterSpacing:'0.05em'}}>
-              BLOOMING NOW {location&&<span style={{color:'#2d5a3d',fontWeight:'400'}}>· {location}</span>}
+            {/* Blooming Now */}
+            <div style={{fontSize:11,color:T.muted,fontWeight:600,letterSpacing:'0.07em',textTransform:'uppercase',paddingLeft:2}}>
+              Blooming Now {location&&<span style={{color:T.dim,fontWeight:400,textTransform:'none',letterSpacing:0}}>· {location}</span>}
             </div>
-            {locLoad&&<div style={{...C.card,color:'#2d7a4a',fontSize:'13px'}}>Querying regional bloom data…</div>}
+            {locLoad&&<div style={{background:T.surf,borderRadius:16,padding:18,color:T.dim,fontSize:13,border:`1px solid ${T.border}`}}>Loading regional bloom data…</div>}
             {!locLoad&&dBloom.map((s,i)=>{
               const spObj=resolveToSP(s);
               const ns=spObj.ns||s.nectar||5;
               const st=s.status||getStatus(spObj,NOW_M);
               const ss=ST[st]||ST.blooming;
-              const tc=spObj.c||s.color||'#4ade80';
+              const tc=spObj.c||s.color||T.accent;
               const ti=TYPES[s.type]||TYPES.wildflower;
               return(
                 <div key={i} className="spc" onClick={()=>setSelected(spObj)}
-                  style={{...C.card,display:'flex',alignItems:'center',gap:'12px',padding:'10px 12px',cursor:'pointer'}}>
-                  <Thumb query={spObj.inat||s.name} color={tc} size={56}/>
+                  style={{background:T.surf,border:`1px solid ${T.border}`,borderRadius:16,display:'flex',alignItems:'center',gap:14,padding:'12px 14px',cursor:'pointer'}}>
+                  <Thumb query={spObj.inat||s.name} color={tc} size={52}/>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'6px',marginBottom:'2px'}}>
-                      <div style={{fontSize:'13px',fontWeight:'600',color:'#c9e8d4',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{s.name}</div>
-                      <div style={{fontSize:'10px',padding:'2px 7px',borderRadius:'4px',background:ss.bg,color:ss.tc,fontWeight:'500',flexShrink:0}}>{ss.label}</div>
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:3}}>
+                      <div style={{fontSize:14,fontWeight:600,color:T.text,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{s.name}</div>
+                      <div style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:ss.bg,color:ss.tc,flexShrink:0}}>{ss.label}</div>
                     </div>
-                    <div style={{fontSize:'11px',color:ti.c,marginBottom:'4px'}}>{ti.label}</div>
-                    <div style={{fontSize:'11px',color:'#f5a623',letterSpacing:'1px'}}>{'▰'.repeat(ns)}{'▱'.repeat(10-ns)}</div>
+                    <div style={{fontSize:11,color:ti.c,marginBottom:5}}>{ti.label}</div>
+                    <div style={{display:'flex',gap:2}}>
+                      {Array.from({length:10},(_,i)=>(
+                        <div key={i} style={{flex:1,height:3,borderRadius:99,background:i<ns?tc:T.surf2}}/>
+                      ))}
+                    </div>
                   </div>
-                  <div style={{color:'#2d7a4a',fontSize:'18px',flexShrink:0}}>›</div>
+                  <div style={{color:T.dim,fontSize:16,flexShrink:0}}>›</div>
                 </div>
               );
             })}
+
             {!locLoad&&dUpcoming.length>0&&(
-              <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-                <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700',letterSpacing:'0.05em'}}>COMING SOON</div>
-                <div style={{display:'flex',gap:'6px',flexWrap:'wrap'}}>
+              <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                <div style={{fontSize:11,color:T.muted,fontWeight:600,letterSpacing:'0.07em',textTransform:'uppercase',paddingLeft:2}}>Coming Soon</div>
+                <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                   {dUpcoming.map((s,i)=>(
-                    <div key={i} style={{padding:'5px 10px',borderRadius:'8px',fontSize:'11px',background:'#1e1b4b',color:'#818cf8',border:'1px solid #312e81',display:'flex',alignItems:'center',gap:'5px'}}>
-                      <div style={{width:'6px',height:'6px',borderRadius:'50%',background:'#818cf8'}}/>
+                    <div key={i} style={{padding:'5px 12px',borderRadius:99,fontSize:12,
+                      background:`${'#a78bfa'}14`,color:'#a78bfa',border:`1px solid ${'#a78bfa'}25`}}>
                       {typeof s==='string'?s:s.name}
                     </div>
                   ))}
@@ -697,73 +670,77 @@ export default function App(){
           </div>
         )}
 
+        {/* ── RADAR ── */}
         {tab==='map'&&(
-          <div style={C.card}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'4px'}}>
-              <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700'}}>BLOOM RADAR</div>
-              {hive&&<div style={{fontSize:'11px',color:'#f5a623'}}>📍 {hive.name}</div>}
+          <div style={{background:T.surf,borderRadius:20,padding:18,border:`1px solid ${T.border}`}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+              <div style={{fontSize:14,fontWeight:600,color:T.text}}>Bloom Radar</div>
+              {hive&&<div style={{fontSize:12,color:T.amber}}>📍 {hive.name}</div>}
             </div>
-            <div style={{fontSize:'11px',color:'#2d5a3d',marginBottom:'12px'}}>Active bloom signals · 3-mile foraging radius</div>
-            <div style={{display:'flex',gap:'3px',flexWrap:'wrap',marginBottom:'14px'}}>
+            <div style={{fontSize:12,color:T.muted,marginBottom:14}}>3-mile foraging radius — select month</div>
+            <div style={{display:'flex',gap:4,flexWrap:'wrap',marginBottom:16}}>
               {MO.map((m,i)=>(
-                <button key={i} onClick={()=>setViewMonth(i+1)} style={{padding:'3px 7px',borderRadius:'4px',border:'none',cursor:'pointer',fontSize:'11px',
-                  background:viewMonth===i+1?'#f5a623':'#0d2014',color:viewMonth===i+1?'#060f0a':'#4a7c5e',fontWeight:viewMonth===i+1?'700':'400'}}>{m}</button>
+                <button key={i} onClick={()=>setViewMonth(i+1)} style={{padding:'4px 9px',borderRadius:99,border:'none',cursor:'pointer',fontSize:11,fontFamily:'inherit',
+                  background:viewMonth===i+1?T.accent:T.bg,color:viewMonth===i+1?'#0b1410':T.muted,fontWeight:viewMonth===i+1?700:400}}>{m}</button>
               ))}
             </div>
             <BloomRadar month={viewMonth} hiveName={hive?.name}/>
             {!hive&&(
-              <div style={{textAlign:'center',marginTop:'8px'}}>
+              <div style={{textAlign:'center',marginTop:10}}>
                 <button onClick={()=>{setShowHiveForm(true);setTab('dashboard');}}
-                  style={{background:'none',border:'1px dashed #2d7a4a',borderRadius:'8px',color:'#2d7a4a',
-                    padding:'6px 14px',cursor:'pointer',fontSize:'11px'}}>
+                  style={{background:'none',border:`1px dashed ${T.border2}`,borderRadius:10,color:T.muted,padding:'6px 14px',cursor:'pointer',fontSize:12,fontFamily:'inherit'}}>
                   📍 Pin your hive location
                 </button>
               </div>
             )}
-            <div style={{marginTop:'14px',fontSize:'11px',color:'#2d7a4a',fontWeight:'700',marginBottom:'6px'}}>ACTIVE</div>
-            <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>
+            <div style={{marginTop:16,fontSize:10,color:T.muted,fontWeight:600,letterSpacing:'0.07em',textTransform:'uppercase',marginBottom:8}}>Active</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
               {SP.filter(s=>s.pm.includes(viewMonth)).map(s=>(
-                <div key={s.id} style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px'}}>
-                  <div style={{width:'8px',height:'8px',borderRadius:'50%',background:s.c}}/>
-                  <span style={{color:'#8ab8a0'}}>{s.name}</span>
+                <div key={s.id} style={{display:'flex',alignItems:'center',gap:5,fontSize:12}}>
+                  <div style={{width:7,height:7,borderRadius:'50%',background:s.c,flexShrink:0}}/>
+                  <span style={{color:T.muted}}>{s.name}</span>
                 </div>
               ))}
             </div>
           </div>
         )}
 
+        {/* ── CALENDAR ── */}
         {tab==='calendar'&&(
-          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
-            <div style={C.card}>
-              <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700',marginBottom:'12px'}}>BLOOM SEASON CALENDAR · 2026</div>
-              <div style={{overflowX:'auto'}}><div style={{minWidth:'400px'}}>
-                <div style={{display:'grid',gridTemplateColumns:'100px repeat(12,1fr)',gap:'2px',marginBottom:'6px'}}>
-                  <div/>{MO_S.map((m,i)=><div key={i} style={{textAlign:'center',fontSize:'9px',color:i+1===NOW_M?'#f5a623':'#2d7a4a',fontWeight:i+1===NOW_M?'700':'400'}}>{m}</div>)}
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div style={{background:T.surf,borderRadius:20,padding:18,border:`1px solid ${T.border}`}}>
+              <div style={{fontSize:14,fontWeight:600,color:T.text,marginBottom:16}}>Bloom Season Calendar · 2026</div>
+              <div style={{overflowX:'auto'}}><div style={{minWidth:400}}>
+                <div style={{display:'grid',gridTemplateColumns:'100px repeat(12,1fr)',gap:2,marginBottom:8}}>
+                  <div/>
+                  {MO_S.map((m,i)=><div key={i} style={{textAlign:'center',fontSize:9,color:i+1===NOW_M?T.amber:T.dim,fontWeight:i+1===NOW_M?700:400}}>{m}</div>)}
                 </div>
                 {SP.map(s=>(
-                  <div key={s.id} style={{display:'grid',gridTemplateColumns:'100px repeat(12,1fr)',gap:'2px',marginBottom:'2px',alignItems:'center'}}>
-                    <div style={{fontSize:'10px',color:'#6ab890',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',paddingRight:'4px'}}>{s.name}</div>
+                  <div key={s.id} style={{display:'grid',gridTemplateColumns:'100px repeat(12,1fr)',gap:2,marginBottom:3,alignItems:'center'}}>
+                    <div style={{fontSize:10,color:T.muted,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',paddingRight:6}}>{s.name}</div>
                     {Array.from({length:12},(_,i)=>i+1).map(m=>(
-                      <div key={m} style={{height:'11px',borderRadius:'2px',background:s.pm.includes(m)?s.c:'#0d2014',
-                        opacity:s.pm.includes(m)?(m===NOW_M?1:0.55):1,outline:m===NOW_M?'1px solid #f5a62350':'none'}}/>
+                      <div key={m} style={{height:8,borderRadius:99,
+                        background:s.pm.includes(m)?s.c:T.surf2,
+                        opacity:s.pm.includes(m)?(m===NOW_M?1:0.5):1,
+                        outline:m===NOW_M?`1px solid ${T.amber}40`:'none'}}/>
                     ))}
                   </div>
                 ))}
-                <div style={{marginTop:'10px',display:'flex',alignItems:'center',gap:'6px',fontSize:'10px',color:'#f5a623'}}>
-                  <div style={{width:'14px',height:'3px',background:'#f5a623',borderRadius:'1px'}}/>Current month
+                <div style={{marginTop:12,display:'flex',alignItems:'center',gap:6,fontSize:10,color:T.amber}}>
+                  <div style={{width:14,height:3,background:T.amber,borderRadius:99}}/>Current month
                 </div>
               </div></div>
             </div>
-            <div style={C.card}>
-              <div style={{fontSize:'11px',color:'#2d7a4a',fontWeight:'700',marginBottom:'12px'}}>MONTHLY NECTAR FLOW FORECAST</div>
-              <div style={{display:'flex',gap:'3px',alignItems:'flex-end',height:'80px'}}>
+            <div style={{background:T.surf,borderRadius:20,padding:18,border:`1px solid ${T.border}`}}>
+              <div style={{fontSize:14,fontWeight:600,color:T.text,marginBottom:14}}>Monthly Nectar Flow Forecast</div>
+              <div style={{display:'flex',gap:3,alignItems:'flex-end',height:80}}>
                 {Array.from({length:12},(_,i)=>{
                   const m=i+1,bl=SP.filter(s=>s.pm.includes(m));
                   const sc=bl.length?bl.reduce((a,b)=>a+b.ns,0)/bl.length:0;
                   const[,fc]=flowInfo(sc);
-                  return(<div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:'4px'}}>
-                    <div style={{width:'100%',borderRadius:'3px 3px 0 0',height:`${(sc/10)*100}%`,minHeight:'2px',background:m===NOW_M?fc:'linear-gradient(180deg,#2d7a4a80,#1a4a2e)'}}/>
-                    <div style={{fontSize:'9px',color:m===NOW_M?'#f5a623':'#2d7a4a',fontWeight:m===NOW_M?'700':'400'}}>{MO_S[i]}</div>
+                  return(<div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+                    <div style={{width:'100%',borderRadius:'4px 4px 0 0',height:`${(sc/10)*100}%`,minHeight:2,background:m===NOW_M?fc:T.surf2}}/>
+                    <div style={{fontSize:9,color:m===NOW_M?T.amber:T.dim,fontWeight:m===NOW_M?700:400}}>{MO_S[i]}</div>
                   </div>);
                 })}
               </div>
@@ -771,42 +748,47 @@ export default function App(){
           </div>
         )}
 
+        {/* ── SPECIES ── */}
         {tab==='species'&&(
-          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
-            <div style={{display:'flex',gap:'5px',flexWrap:'wrap'}}>
-              <button onClick={()=>setTypeFilter('all')} style={{padding:'4px 10px',borderRadius:'99px',border:'none',cursor:'pointer',fontSize:'11px',background:typeFilter==='all'?'#1a4a2e':'#0d2014',color:typeFilter==='all'?'#4ade80':'#4a7c5e'}}>All</button>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+              <button onClick={()=>setTypeFilter('all')} style={{padding:'6px 14px',borderRadius:99,border:'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',
+                background:typeFilter==='all'?T.accent:'transparent',color:typeFilter==='all'?'#0b1410':T.muted,fontWeight:typeFilter==='all'?700:400}}>All</button>
               {Object.entries(TYPES).map(([k,v])=>(
-                <button key={k} onClick={()=>setTypeFilter(k)} style={{padding:'4px 10px',borderRadius:'99px',border:'none',cursor:'pointer',fontSize:'11px',background:typeFilter===k?v.c+'22':'#0d2014',color:typeFilter===k?v.c:'#4a7c5e'}}>{v.label}</button>
+                <button key={k} onClick={()=>setTypeFilter(k)} style={{padding:'6px 14px',borderRadius:99,border:'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',
+                  background:typeFilter===k?`${v.c}22`:'transparent',color:typeFilter===k?v.c:T.muted,fontWeight:typeFilter===k?600:400}}>{v.label}</button>
               ))}
             </div>
             {filtered.map(s=>{
               const st=getStatus(s,NOW_M),ss=ST[st];
               return(
                 <div key={s.id} className="spc" onClick={()=>setSelected(s)}
-                  style={{...C.card,padding:0,overflow:'hidden',cursor:'pointer'}}>
+                  style={{background:T.surf,border:`1px solid ${T.border}`,borderRadius:18,overflow:'hidden',cursor:'pointer'}}>
                   <div style={{position:'relative',overflow:'hidden'}}>
-                    <Banner query={s.inat} color={s.c} height={120}/>
-                    <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 25%,#0a1f14f0 100%)',pointerEvents:'none'}}/>
-                    <div style={{position:'absolute',bottom:'10px',left:'12px',right:'12px',display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+                    <Banner query={s.inat} color={s.c} height={140}/>
+                    <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom,transparent 20%,rgba(255,255,255,0.97) 100%)'}}/>
+                    <div style={{position:'absolute',bottom:12,left:14,right:14,display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
                       <div>
-                        <div style={{fontSize:'15px',fontWeight:'700',color:'#e8f8f0',textShadow:'0 1px 6px #000a'}}>{s.name}</div>
-                        <div style={{fontSize:'10px',color:'#94a3b8',fontStyle:'italic'}}>{s.inat}</div>
+                        <div style={{fontSize:16,fontWeight:700,color:T.text,letterSpacing:-0.3}}>{s.name}</div>
+                        <div style={{fontSize:11,color:T.muted,fontStyle:'italic',marginTop:1}}>{s.inat}</div>
                       </div>
-                      <div style={{display:'flex',gap:'6px',alignItems:'center'}}>
-                        <div style={{padding:'3px 8px',borderRadius:'5px',fontSize:'10px',background:ss.bg,color:ss.tc,fontWeight:'500'}}>{ss.label}</div>
-                        <div style={{color:'#4ade80',fontSize:'18px'}}>›</div>
+                      <div style={{display:'flex',gap:6,alignItems:'center'}}>
+                        <div style={{padding:'3px 9px',borderRadius:99,fontSize:11,background:ss.bg,color:ss.tc,fontWeight:500}}>{ss.label}</div>
+                        <div style={{color:T.dim,fontSize:16}}>›</div>
                       </div>
                     </div>
                   </div>
-                  <div style={{padding:'10px 12px'}}>
-                    <div style={{display:'flex',gap:'2px',marginBottom:'8px'}}>
+                  <div style={{padding:'12px 14px'}}>
+                    <div style={{display:'flex',gap:3,marginBottom:8}}>
                       {Array.from({length:12},(_,i)=>i+1).map(m=>(
-                        <div key={m} style={{flex:1,height:'5px',borderRadius:'1px',background:s.pm.includes(m)?s.c:'#0d2014',opacity:s.pm.includes(m)?(m===NOW_M?1:0.45):1}}/>
+                        <div key={m} style={{flex:1,height:5,borderRadius:99,
+                          background:s.pm.includes(m)?s.c:T.surf2,
+                          opacity:s.pm.includes(m)?(m===NOW_M?1:0.45):1}}/>
                       ))}
                     </div>
-                    <div style={{display:'flex',justifyContent:'space-between',fontSize:'11px'}}>
-                      <span style={{color:'#2d7a4a'}}>Peak: {s.pm.map(m=>MO[m-1]).join(', ')}</span>
-                      <span style={{color:s.ns>=8?'#f5a623':s.ns>=6?'#a3e635':'#4a7c5e',fontWeight:'600'}}>Nectar {s.ns}/10</span>
+                    <div style={{display:'flex',justifyContent:'space-between',fontSize:12}}>
+                      <span style={{color:T.muted}}>Peak: {s.pm.map(m=>MO[m-1]).join(', ')}</span>
+                      <span style={{color:s.ns>=8?T.amber:s.ns>=6?T.accent:T.muted,fontWeight:600}}>Nectar {s.ns}/10</span>
                     </div>
                   </div>
                 </div>
@@ -819,8 +801,8 @@ export default function App(){
 
       </div>
 
-      <div style={{padding:'16px',textAlign:'center',fontSize:'10px',color:'#1a3a22',borderTop:'1px solid #0d2014',marginTop:'8px'}}>
-        BloomCast Beta · Photos via iNaturalist · Phenology via USA-NPN · Satellite via Sentinel-2
+      <div style={{padding:20,textAlign:'center',fontSize:11,color:T.dim,borderTop:`1px solid ${T.border}`,marginTop:8}}>
+        BloomCast · Photos via iNaturalist · Phenology via USA-NPN
       </div>
     </div>
   );
