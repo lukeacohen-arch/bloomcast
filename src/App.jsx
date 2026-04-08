@@ -283,16 +283,25 @@ function HoneyPredictor({ bloomingSpecies, location }) {
 function CommunityTab() {
   const [reports,    setReports]    = useState([]);
   const [loading,    setLoading]    = useState(true);
+  const [reportType, setReportType] = useState('bloom'); // 'bloom' | 'hive'
+  const [feedFilter, setFeedFilter] = useState('all');   // 'all' | 'bloom' | 'hive'
   const [form,       setForm]       = useState({ species:'', status:'blooming', location:'', note:'' });
+  const [hiveForm,   setHiveForm]   = useState({ update_type:'added supers', location:'', note:'' });
   const [honeypot,   setHoneypot]   = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted,  setSubmitted]  = useState(false);
   const [error,      setError]      = useState('');
 
+  const HIVE_UPDATES = [
+    'Added supers', 'Removed supers', 'Inspected hive', 'Fed bees',
+    'Treated for mites', 'Split hive', 'Caught swarm', 'Marked queen',
+    'Strong nectar flow', 'Noticed dearth', 'Winterized hive', 'Spring buildup',
+  ];
+
   const loadReports = async () => {
     setLoading(true);
     try {
-      const r = await fetch(`${SUPABASE_URL}/rest/v1/reports?order=ts.desc&limit=50`, { headers: sbHeaders() });
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/reports?order=ts.desc&limit=80`, { headers: sbHeaders() });
       if (r.ok) setReports(await r.json());
     } catch {}
     setLoading(false);
@@ -300,7 +309,7 @@ function CommunityTab() {
 
   useEffect(() => { loadReports(); }, []);
 
-  const submit = async () => {
+  const submitBloom = async () => {
     if (honeypot) return;
     const { allowed, secondsLeft } = checkRateLimit();
     if (!allowed) { setError(`Please wait ${secondsLeft}s before submitting again.`); return; }
@@ -312,96 +321,216 @@ function CommunityTab() {
       const r = await fetch(`${SUPABASE_URL}/rest/v1/reports`, {
         method: 'POST',
         headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ ...form, ts: Date.now() }),
+        body: JSON.stringify({ ...form, report_type: 'bloom', ts: Date.now() }),
       });
       if (r.ok || r.status === 201) {
         setForm({ species:'', status:'blooming', location:'', note:'' });
-        setHoneypot('');
-        setSubmitted(true);
+        setHoneypot(''); setSubmitted(true);
         setTimeout(() => setSubmitted(false), 3000);
         await loadReports();
-      } else {
-        const t = await r.text();
-        setError(`Error ${r.status}: ${t}`);
-      }
+      } else { const t = await r.text(); setError(`Error ${r.status}: ${t}`); }
     } catch (e) { setError(`Connection error: ${e.message}`); }
     setSubmitting(false);
   };
 
-  const stC = { blooming: T.accent, opening:'#0d9488', fading:'#ea580c', 'not yet':'#6d5ad5' };
+  const submitHive = async () => {
+    if (honeypot) return;
+    const { allowed, secondsLeft } = checkRateLimit();
+    if (!allowed) { setError(`Please wait ${secondsLeft}s before submitting again.`); return; }
+    if (!hiveForm.location.trim()) { setError('Location is required.'); return; }
+    if (hiveForm.note.length > 500) { setError('Notes must be under 500 characters.'); return; }
+    setError(''); setSubmitting(true);
+    if (!SUPABASE_URL || !SUPABASE_KEY) { setError('Supabase not configured.'); setSubmitting(false); return; }
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/reports`, {
+        method: 'POST',
+        headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          species: hiveForm.update_type,
+          status: 'hive_update',
+          location: hiveForm.location,
+          note: hiveForm.note,
+          report_type: 'hive',
+          ts: Date.now(),
+        }),
+      });
+      if (r.ok || r.status === 201) {
+        setHiveForm({ update_type:'Added supers', location:'', note:'' });
+        setHoneypot(''); setSubmitted(true);
+        setTimeout(() => setSubmitted(false), 3000);
+        await loadReports();
+      } else { const t = await r.text(); setError(`Error ${r.status}: ${t}`); }
+    } catch (e) { setError(`Connection error: ${e.message}`); }
+    setSubmitting(false);
+  };
+
+  const stC = { blooming:T.accent, opening:'#0d9488', fading:'#ea580c', 'not yet':'#7c3aed', hive_update:T.amber };
+
+  const hiveUpdateIcons = {
+    'Added supers':'🍯', 'Removed supers':'📦', 'Inspected hive':'🔍', 'Fed bees':'🥄',
+    'Treated for mites':'💊', 'Split hive':'✂️', 'Caught swarm':'🐝', 'Marked queen':'👑',
+    'Strong nectar flow':'📈', 'Noticed dearth':'📉', 'Winterized hive':'❄️', 'Spring buildup':'🌱',
+  };
+
   const inp = {
-    background: T.bg, border:`1px solid ${T.border2}`, borderRadius:10,
-    color: T.text, padding:'10px 14px', fontSize:13, outline:'none',
+    background:T.bg, border:`1px solid ${T.border2}`, borderRadius:10,
+    color:T.text, padding:'10px 14px', fontSize:13, outline:'none',
     width:'100%', boxSizing:'border-box', fontFamily:'inherit',
   };
 
+  const filteredReports = reports.filter(r =>
+    feedFilter === 'all' ? true :
+    feedFilter === 'hive' ? r.report_type === 'hive' || r.status === 'hive_update' :
+    r.report_type !== 'hive' && r.status !== 'hive_update'
+  );
+
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-      <div style={{ background:T.surf, borderRadius:16, padding:18, border:`1px solid ${T.border}` }}>
-        <div style={{ fontSize:11, color:T.muted, fontWeight:600, letterSpacing:'0.07em', textTransform:'uppercase', marginBottom:14 }}>
-          Log a Sighting
-        </div>
-        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-          <input style={inp} placeholder="Species (e.g. Black Locust, Wild Violet…)"
-            value={form.species} onChange={e => setForm(f => ({ ...f, species: e.target.value }))}/>
-          <select style={{ ...inp, cursor:'pointer' }} value={form.status}
-            onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
-            <option value="blooming">Blooming</option>
-            <option value="opening">Just Opening</option>
-            <option value="fading">Fading</option>
-            <option value="not yet">Not Yet</option>
-          </select>
-          <input style={inp} placeholder="Your location (e.g. Hudson Valley, NY)"
-            value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))}/>
-          <textarea style={{ ...inp, resize:'none', height:64 }}
-            placeholder="Notes — bee activity, density, conditions (optional)"
-            value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))}/>
-          {form.note.length > 400 && (
-            <div style={{ fontSize:11, color:form.note.length > 500 ? '#ef4444' : T.dim, textAlign:'right' }}>
-              {form.note.length}/500
-            </div>
-          )}
-          {/* Honeypot — hidden from users, catches bots */}
-          <input type="text" name="website" value={honeypot}
-            onChange={e => setHoneypot(e.target.value)}
-            style={{ display:'none' }} tabIndex={-1} autoComplete="off"/>
-          {error && <div style={{ fontSize:12, color:'#ef4444' }}>{error}</div>}
-          <button onClick={submit} disabled={submitting}
-            style={{ background:submitted ? T.surf2 : T.accent,
-              color: submitted ? T.accent : '#fff',
-              border:`1px solid ${submitted ? T.accent + '40' : 'transparent'}`,
-              borderRadius:10, padding:'10px', fontWeight:700,
-              cursor:'pointer', fontSize:13, fontFamily:'inherit' }}>
-            {submitted ? '✓ Sighting Logged' : submitting ? 'Submitting…' : 'Submit Sighting'}
+
+      {/* Report type toggle */}
+      <div style={{ display:'flex', gap:2, background:T.surf2, borderRadius:12, padding:3 }}>
+        {[['bloom','🌸 Bloom Sighting'],['hive','🐝 Hive Update']].map(([k,l]) => (
+          <button key={k} onClick={() => { setReportType(k); setError(''); setSubmitted(false); }}
+            style={{ flex:1, padding:'8px', borderRadius:10, border:'none', cursor:'pointer',
+              fontSize:13, fontFamily:'inherit', fontWeight:reportType===k?600:400,
+              background: reportType===k ? T.surf : 'transparent',
+              color: reportType===k ? T.text : T.muted,
+              boxShadow: reportType===k ? '0 1px 3px rgba(0,0,0,0.08)' : 'none' }}>
+            {l}
           </button>
-        </div>
+        ))}
       </div>
 
-      <div style={{ fontSize:11, color:T.muted, fontWeight:600, letterSpacing:'0.07em', textTransform:'uppercase', paddingLeft:4 }}>
-        Community Sightings
+      {/* Bloom sighting form */}
+      {reportType === 'bloom' && (
+        <div style={{ background:T.surf, borderRadius:16, padding:18, border:`1px solid ${T.border}` }}>
+          <div style={{ fontSize:11, color:T.muted, fontWeight:600, letterSpacing:'0.07em', textTransform:'uppercase', marginBottom:14 }}>
+            Log a Bloom Sighting
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            <input style={inp} placeholder="Species (e.g. Black Locust, Wild Violet…)"
+              value={form.species} onChange={e => setForm(f => ({ ...f, species: e.target.value }))}/>
+            <select style={{ ...inp, cursor:'pointer' }} value={form.status}
+              onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
+              <option value="blooming">Blooming</option>
+              <option value="opening">Just Opening</option>
+              <option value="fading">Fading</option>
+              <option value="not yet">Not Yet</option>
+            </select>
+            <input style={inp} placeholder="Your location (e.g. Hudson Valley, NY)"
+              value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))}/>
+            <textarea style={{ ...inp, resize:'none', height:64 }}
+              placeholder="Notes — bee activity, density, conditions (optional)"
+              value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))}/>
+            {form.note.length > 400 && (
+              <div style={{ fontSize:11, color:form.note.length > 500 ? '#ef4444' : T.dim, textAlign:'right' }}>
+                {form.note.length}/500
+              </div>
+            )}
+            <input type="text" name="website" value={honeypot} onChange={e => setHoneypot(e.target.value)}
+              style={{ display:'none' }} tabIndex={-1} autoComplete="off"/>
+            {error && <div style={{ fontSize:12, color:'#ef4444' }}>{error}</div>}
+            <button onClick={submitBloom} disabled={submitting}
+              style={{ background:submitted?T.surf2:T.accent, color:submitted?T.accent:'#fff',
+                border:`1px solid ${submitted?T.accent+'40':'transparent'}`,
+                borderRadius:10, padding:'10px', fontWeight:700, cursor:'pointer', fontSize:13, fontFamily:'inherit' }}>
+              {submitted ? '✓ Sighting Logged' : submitting ? 'Submitting…' : 'Submit Sighting'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Hive update form */}
+      {reportType === 'hive' && (
+        <div style={{ background:T.surf, borderRadius:16, padding:18, border:`1px solid ${T.border}` }}>
+          <div style={{ fontSize:11, color:T.muted, fontWeight:600, letterSpacing:'0.07em', textTransform:'uppercase', marginBottom:14 }}>
+            Log a Hive Update
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {/* Quick-pick update type buttons */}
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:4 }}>
+              {HIVE_UPDATES.map(u => (
+                <button key={u} onClick={() => setHiveForm(f => ({ ...f, update_type: u }))}
+                  style={{ padding:'5px 11px', borderRadius:99, border:'none', cursor:'pointer',
+                    fontSize:12, fontFamily:'inherit',
+                    background: hiveForm.update_type === u ? T.amber : T.bg,
+                    color: hiveForm.update_type === u ? '#fff' : T.muted,
+                    fontWeight: hiveForm.update_type === u ? 600 : 400 }}>
+                  {hiveUpdateIcons[u]} {u}
+                </button>
+              ))}
+            </div>
+            <input style={inp} placeholder="Your location (e.g. Hudson Valley, NY)"
+              value={hiveForm.location} onChange={e => setHiveForm(f => ({ ...f, location: e.target.value }))}/>
+            <textarea style={{ ...inp, resize:'none', height:80 }}
+              placeholder="Details — colony strength, honey stores, observations, weather conditions…"
+              value={hiveForm.note} onChange={e => setHiveForm(f => ({ ...f, note: e.target.value }))}/>
+            {hiveForm.note.length > 400 && (
+              <div style={{ fontSize:11, color:hiveForm.note.length > 500 ? '#ef4444' : T.dim, textAlign:'right' }}>
+                {hiveForm.note.length}/500
+              </div>
+            )}
+            <input type="text" name="website" value={honeypot} onChange={e => setHoneypot(e.target.value)}
+              style={{ display:'none' }} tabIndex={-1} autoComplete="off"/>
+            {error && <div style={{ fontSize:12, color:'#ef4444' }}>{error}</div>}
+            <button onClick={submitHive} disabled={submitting}
+              style={{ background:submitted?T.surf2:T.amber, color:submitted?T.amber:'#fff',
+                border:`1px solid ${submitted?T.amber+'40':'transparent'}`,
+                borderRadius:10, padding:'10px', fontWeight:700, cursor:'pointer', fontSize:13, fontFamily:'inherit' }}>
+              {submitted ? '✓ Update Logged' : submitting ? 'Submitting…' : 'Submit Hive Update'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Feed filter */}
+      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+        <div style={{ fontSize:11, color:T.muted, fontWeight:600, letterSpacing:'0.07em', textTransform:'uppercase', flex:1 }}>
+          Community Feed
+        </div>
+        {[['all','All'],['bloom','Blooms'],['hive','Hives']].map(([k,l]) => (
+          <button key={k} onClick={() => setFeedFilter(k)}
+            style={{ padding:'4px 10px', borderRadius:99, border:'none', cursor:'pointer',
+              fontSize:11, fontFamily:'inherit',
+              background: feedFilter===k ? (k==='hive'?T.amber:k==='bloom'?T.accent:T.text) : T.surf2,
+              color: feedFilter===k ? '#fff' : T.muted,
+              fontWeight: feedFilter===k ? 600 : 400 }}>
+            {l}
+          </button>
+        ))}
       </div>
+
       {loading && (
         <div style={{ background:T.surf, borderRadius:16, padding:18, color:T.dim, fontSize:13, border:`1px solid ${T.border}` }}>
           Loading…
         </div>
       )}
-      {!loading && reports.length === 0 && (
+      {!loading && filteredReports.length === 0 && (
         <div style={{ background:T.surf, borderRadius:16, padding:24, color:T.dim, fontSize:13, textAlign:'center', border:`1px solid ${T.border}` }}>
-          No sightings yet — be the first.
+          No reports yet — be the first.
         </div>
       )}
-      {!loading && reports.map((r, i) => (
-        <div key={i} style={{ background:T.surf, borderRadius:14, padding:'14px 16px', border:`1px solid ${T.border}` }}>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:4 }}>
-            <div style={{ fontSize:14, fontWeight:600, color:T.text }}>{r.species}</div>
-            <div style={{ fontSize:11, padding:'2px 8px', borderRadius:99,
-              background:`${stC[r.status] || T.accent}15`, color:stC[r.status] || T.accent,
-              flexShrink:0, marginLeft:8 }}>{r.status}</div>
+      {!loading && filteredReports.map((r, i) => {
+        const isHive = r.report_type === 'hive' || r.status === 'hive_update';
+        const icon = isHive ? (hiveUpdateIcons[r.species] || '🐝') : '🌸';
+        const tagColor = isHive ? T.amber : (stC[r.status] || T.accent);
+        const tagLabel = isHive ? r.species : r.status;
+        return (
+          <div key={i} style={{ background:T.surf, borderRadius:14, padding:'14px 16px',
+            border:`1px solid ${isHive ? T.amber+'30' : T.border}` }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:4 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <span style={{ fontSize:16 }}>{icon}</span>
+                <div style={{ fontSize:14, fontWeight:600, color:T.text }}>{r.species}</div>
+              </div>
+              <div style={{ fontSize:11, padding:'2px 8px', borderRadius:99,
+                background:`${tagColor}15`, color:tagColor, flexShrink:0, marginLeft:8 }}>{tagLabel}</div>
+            </div>
+            <div style={{ fontSize:12, color:T.dim, marginLeft:24 }}>📍 {r.location} · {new Date(r.ts).toLocaleDateString()}</div>
+            {r.note && <p style={{ margin:'6px 0 0', fontSize:13, color:T.muted, lineHeight:1.5, marginLeft:24 }}>{r.note}</p>}
           </div>
-          <div style={{ fontSize:12, color:T.dim }}>📍 {r.location} · {new Date(r.ts).toLocaleDateString()}</div>
-          {r.note && <p style={{ margin:'6px 0 0', fontSize:13, color:T.muted, lineHeight:1.5 }}>{r.note}</p>}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
