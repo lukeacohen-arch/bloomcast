@@ -274,7 +274,7 @@ const ENTRY_TYPES = [
   {v:'observation',   l:'Observation',     e:'📝'},
 ];
 
-function JournalTab({ token, avgNec }) {
+function JournalTab({ token, user, avgNec }) {
   const today = new Date();
   const [calYear,  setCalYear]  = useState(today.getFullYear());
   const [calMonth, setCalMonth] = useState(today.getMonth());
@@ -311,6 +311,7 @@ function JournalTab({ token, avgNec }) {
         method: 'POST',
         headers: { ...sbHeaders(token), 'Prefer':'return=minimal' },
         body: JSON.stringify({
+          user_id: user?.id,
           date: selected,
           hive_name: form.hive_name || null,
           entry_type: form.entry_type,
@@ -934,8 +935,13 @@ function SatelliteMap({location,allSpecies,month,hive}){
 
 // ── Main App ──────────────────────────────────────────────────────────────────
 export default function App(){
-  const[authToken, setAuthToken] = useState(()=>localStorage.getItem('bc_token')||'');
-  const[user,      setUser]      = useState(()=>{try{return JSON.parse(localStorage.getItem('bc_user'));} catch{return null;}});
+  const[authToken, setAuthToken] = useState(()=>{
+    const t = localStorage.getItem('bc_token');
+    return t && t.length > 10 ? t : '';
+  });
+  const[user, setUser] = useState(()=>{
+    try{ return JSON.parse(localStorage.getItem('bc_user')); } catch{ return null; }
+  });
   const[tab,setTab]=useState('dashboard');
   const[viewMonth,setViewMonth]=useState(NOW_M);
   const[locInput,setLocInput]=useState('');
@@ -1209,7 +1215,7 @@ export default function App(){
         </div>}
 
         {tab==='community'&&<CommunityTab/>}
-        {tab==='journal'&&<JournalTab token={authToken} avgNec={avgNec}/>}
+        {tab==='journal'&&<JournalTab token={authToken} user={user} avgNec={avgNec}/>}
 
       </div>
 
