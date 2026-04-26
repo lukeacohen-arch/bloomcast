@@ -99,6 +99,13 @@ const sbAuth = {
     });
     return r.json();
   },
+  refresh: async (refreshToken) => {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method:'POST', headers:sbHeaders(),
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+    return r.json();
+  },
   signOut: async (token) => {
     await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
       method:'POST', headers:sbHeaders(token),
@@ -198,7 +205,8 @@ function AuthScreen({ onAuth }) {
     } else if (d.access_token) {
       localStorage.setItem('bc_token', d.access_token);
       localStorage.setItem('bc_user', JSON.stringify(d.user));
-      onAuth(d.access_token, d.user);
+      if (d.refresh_token) localStorage.setItem('bc_refresh', d.refresh_token);
+      onAuth(d.access_token, d.user, d.refresh_token);
     }
   };
 
@@ -1013,12 +1021,35 @@ export default function App(){
 
   useEffect(()=>{try{const s=localStorage.getItem('bc-hive');if(s)setHive(JSON.parse(s));}catch{}},[]);
 
-  const handleAuth=(token,u)=>{setAuthToken(token);setUser(u);};
-  const handleSignOut=async()=>{
-    await sbAuth.signOut(authToken);
-    localStorage.removeItem('bc_token');localStorage.removeItem('bc_user');
-    setAuthToken('');setUser(null);
+  const handleAuth = (token, u, refreshToken) => {
+    setAuthToken(token); setUser(u);
+    if (refreshToken) localStorage.setItem('bc_refresh', refreshToken);
   };
+
+  const handleSignOut = async () => {
+    await sbAuth.signOut(authToken);
+    localStorage.removeItem('bc_token');
+    localStorage.removeItem('bc_user');
+    localStorage.removeItem('bc_refresh');
+    setAuthToken(''); setUser(null);
+  };
+
+  // Auto-refresh token on mount if we have a refresh token
+  useEffect(() => {
+    const refresh = localStorage.getItem('bc_refresh');
+    if (refresh && authToken) {
+      sbAuth.refresh(refresh).then(d => {
+        if (d.access_token) {
+          localStorage.setItem('bc_token', d.access_token);
+          if (d.refresh_token) localStorage.setItem('bc_refresh', d.refresh_token);
+          setAuthToken(d.access_token);
+        } else {
+          // Refresh failed — sign out
+          handleSignOut();
+        }
+      }).catch(() => {});
+    }
+  }, []);
 
   const saveHive=()=>{
     if(!hiveInput.trim())return;
