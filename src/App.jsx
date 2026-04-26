@@ -286,6 +286,8 @@ function JournalTab({ token, user, avgNec }) {
   const [saving,   setSaving]   = useState(false);
   const [error,    setError]    = useState('');
 
+  const [customType, setCustomType] = useState('');
+
   const todayStr = today.toISOString().split('T')[0];
 
   const loadEntries = async () => {
@@ -304,6 +306,7 @@ function JournalTab({ token, user, avgNec }) {
 
   const save = async () => {
     if (!selected) { setError('Select a date first.'); return; }
+    if (form.entry_type === 'other' && !customType.trim()) { setError('Please describe the entry type.'); return; }
     if (!form.entry_type) { setError('Select an entry type.'); return; }
     setSaving(true); setError('');
     try {
@@ -314,13 +317,14 @@ function JournalTab({ token, user, avgNec }) {
           user_id: user?.id,
           date: selected,
           hive_name: form.hive_name || null,
-          entry_type: form.entry_type,
+          entry_type: form.entry_type === 'other' ? customType.trim() : form.entry_type,
           notes: form.notes || null,
           nectar_index: avgNec || null,
         }),
       });
       if (r.ok || r.status === 201) {
         setForm({ hive_name:'', entry_type:'inspection', notes:'' });
+        setCustomType('');
         setShowForm(false);
         await loadEntries();
       } else {
@@ -433,18 +437,35 @@ function JournalTab({ token, user, avgNec }) {
               {/* Entry type grid */}
               <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>
                 {ENTRY_TYPES.map(t=>(
-                  <button key={t.v} onClick={()=>setForm(f=>({...f,entry_type:t.v}))}
-                    style={{padding:'8px 6px',borderRadius:10,border:`1px solid ${form.entry_type===t.v?T.accent:T.border}`,
+                  <button key={t.v} onClick={()=>{setForm(f=>({...f,entry_type:t.v}));setCustomType('');}}
+                    style={{padding:'8px 6px',borderRadius:10,border:`1px solid ${form.entry_type===t.v&&form.entry_type!=='other'?T.accent:T.border}`,
                       cursor:'pointer',fontSize:11,fontFamily:'inherit',
-                      background:form.entry_type===t.v?`${T.accent}12`:T.bg,
-                      color:form.entry_type===t.v?T.accent:T.muted,
-                      fontWeight:form.entry_type===t.v?600:400,
+                      background:form.entry_type===t.v&&form.entry_type!=='other'?`${T.accent}12`:T.bg,
+                      color:form.entry_type===t.v&&form.entry_type!=='other'?T.accent:T.muted,
+                      fontWeight:form.entry_type===t.v&&form.entry_type!=='other'?600:400,
                       display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
                     <span style={{fontSize:18}}>{t.e}</span>
                     <span>{t.l}</span>
                   </button>
                 ))}
+                {/* Other button */}
+                <button onClick={()=>setForm(f=>({...f,entry_type:'other'}))}
+                  style={{padding:'8px 6px',borderRadius:10,border:`1px solid ${form.entry_type==='other'?T.accent:T.border}`,
+                    cursor:'pointer',fontSize:11,fontFamily:'inherit',
+                    background:form.entry_type==='other'?`${T.accent}12`:T.bg,
+                    color:form.entry_type==='other'?T.accent:T.muted,
+                    fontWeight:form.entry_type==='other'?600:400,
+                    display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
+                  <span style={{fontSize:18}}>✏️</span>
+                  <span>Other</span>
+                </button>
               </div>
+              {form.entry_type==='other'&&(
+                <input style={{background:T.bg,border:`1px solid ${T.border2}`,borderRadius:10,color:T.text,
+                  padding:'10px 14px',fontSize:13,outline:'none',width:'100%',boxSizing:'border-box',fontFamily:'inherit'}}
+                  placeholder="Describe the entry type…"
+                  value={customType} onChange={e=>setCustomType(e.target.value)} autoFocus/>
+              )}
               <input style={inp} placeholder="Hive name (optional — e.g. Hive 1, Top Bar)"
                 value={form.hive_name} onChange={e=>setForm(f=>({...f,hive_name:e.target.value}))}/>
               <textarea style={{...inp,resize:'none',height:90}}
