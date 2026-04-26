@@ -323,7 +323,10 @@ function JournalTab({ token, user, avgNec }) {
         setForm({ hive_name:'', entry_type:'inspection', notes:'' });
         setShowForm(false);
         await loadEntries();
-      } else { setError('Failed to save. Try again.'); }
+      } else {
+        const t = await r.text();
+        setError(`Save failed (${r.status}): ${t}`);
+      }
     } catch (e) { setError(`Error: ${e.message}`); }
     setSaving(false);
   };
@@ -600,7 +603,7 @@ function HoneyPredictor({bloomingSpecies,location}){
 }
 
 // ── Community Tab ─────────────────────────────────────────────────────────────
-function CommunityTab(){
+function CommunityTab({ user }){
   const HIVE_UPDATES=['Added supers','Removed supers','Inspected hive','Fed bees','Treated for mites','Split hive','Caught swarm','Marked queen','Strong nectar flow','Noticed dearth','Winterized hive','Spring buildup'];
   const hiveIcons={'Added supers':'🍯','Removed supers':'📦','Inspected hive':'🔍','Fed bees':'🥄','Treated for mites':'💊','Split hive':'✂️','Caught swarm':'🐝','Marked queen':'👑','Strong nectar flow':'📈','Noticed dearth':'📉','Winterized hive':'❄️','Spring buildup':'🌱'};
   const[reports,setReports]=useState([]);
@@ -632,7 +635,7 @@ function CommunityTab(){
     try{
       const r=await fetch(`${SUPABASE_URL}/rest/v1/reports`,{method:'POST',
         headers:{...sbHeaders(),'Prefer':'return=minimal'},
-        body:JSON.stringify({...form,report_type:'bloom',ts:Date.now()})});
+        body:JSON.stringify({...form, report_type:'bloom', user_id: user?.id, ts:Date.now()})});
       if(r.ok||r.status===201){setForm({species:'',status:'blooming',location:'',note:''});setHoneypot('');setSubmitted(true);setTimeout(()=>setSubmitted(false),3000);await loadReports();}
       else{const t=await r.text();setError(`Error ${r.status}: ${t}`);}
     }catch(e){setError(`Error: ${e.message}`);}
@@ -648,11 +651,20 @@ function CommunityTab(){
     try{
       const r=await fetch(`${SUPABASE_URL}/rest/v1/reports`,{method:'POST',
         headers:{...sbHeaders(),'Prefer':'return=minimal'},
-        body:JSON.stringify({species:hiveForm.update_type,status:'hive_update',location:hiveForm.location,note:hiveForm.note,report_type:'hive',ts:Date.now()})});
+        body:JSON.stringify({species:hiveForm.update_type,status:'hive_update',location:hiveForm.location,note:hiveForm.note,report_type:'hive', user_id: user?.id, ts:Date.now()})});
       if(r.ok||r.status===201){setHiveForm({update_type:'Added supers',location:'',note:''});setHoneypot('');setSubmitted(true);setTimeout(()=>setSubmitted(false),3000);await loadReports();}
       else{const t=await r.text();setError(`Error ${r.status}: ${t}`);}
     }catch(e){setError(`Error: ${e.message}`);}
     setSubmitting(false);
+  };
+
+  const deleteReport = async (id) => {
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/reports?id=eq.${id}`, {
+        method: 'DELETE', headers: sbHeaders(),
+      });
+      await loadReports();
+    } catch {}
   };
 
   const stC={blooming:T.accent,opening:'#0d9488',fading:'#ea580c','not yet':'#7c3aed',hive_update:T.amber};
@@ -740,7 +752,16 @@ function CommunityTab(){
                 <span style={{fontSize:16}}>{icon}</span>
                 <div style={{fontSize:14,fontWeight:600,color:T.text}}>{r.species}</div>
               </div>
-              <div style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:`${tagColor}15`,color:tagColor,flexShrink:0,marginLeft:8}}>{r.status}</div>
+              <div style={{display:'flex',alignItems:'center',gap:6}}>
+                <div style={{fontSize:11,padding:'2px 8px',borderRadius:99,background:`${tagColor}15`,color:tagColor,flexShrink:0}}>{r.status}</div>
+                {user && r.user_id === user.id && (
+                  <button onClick={()=>deleteReport(r.id)}
+                    style={{background:'none',border:`1px solid ${T.border2}`,borderRadius:6,
+                      color:T.dim,cursor:'pointer',fontSize:12,padding:'2px 7px',fontFamily:'inherit'}}>
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
             <div style={{fontSize:12,color:T.dim,marginLeft:24}}>📍 {r.location} · {new Date(r.ts).toLocaleDateString()}</div>
             {r.note&&<p style={{margin:'6px 0 0',fontSize:13,color:T.muted,lineHeight:1.5,marginLeft:24}}>{r.note}</p>}
@@ -1214,7 +1235,7 @@ export default function App(){
           })}
         </div>}
 
-        {tab==='community'&&<CommunityTab/>}
+        {tab==='community'&&<CommunityTab user={user}/>}
         {tab==='journal'&&<JournalTab token={authToken} user={user} avgNec={avgNec}/>}
 
       </div>
