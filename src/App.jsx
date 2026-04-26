@@ -711,13 +711,26 @@ function CommunityTab({ user }){
           <div style={{display:'flex',flexDirection:'column',gap:8}}>
             <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:4}}>
               {HIVE_UPDATES.map(u=>(
-                <button key={u} onClick={()=>setHiveForm(f=>({...f,update_type:u}))}
+                <button key={u} onClick={()=>{setHiveForm(f=>({...f,update_type:u}));}}
                   style={{padding:'5px 11px',borderRadius:99,border:'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',
                     background:hiveForm.update_type===u?T.amber:T.bg,color:hiveForm.update_type===u?'#fff':T.muted,fontWeight:hiveForm.update_type===u?600:400}}>
                   {hiveIcons[u]} {u}
                 </button>
               ))}
+              <button onClick={()=>setHiveForm(f=>({...f,update_type:'other'}))}
+                style={{padding:'5px 11px',borderRadius:99,border:'none',cursor:'pointer',fontSize:12,fontFamily:'inherit',
+                  background:hiveForm.update_type==='other'||!HIVE_UPDATES.includes(hiveForm.update_type)?T.amber:T.bg,
+                  color:hiveForm.update_type==='other'||!HIVE_UPDATES.includes(hiveForm.update_type)?'#fff':T.muted,
+                  fontWeight:hiveForm.update_type==='other'||!HIVE_UPDATES.includes(hiveForm.update_type)?600:400}}>
+                ✏️ Other
+              </button>
             </div>
+            {(hiveForm.update_type==='other'||!HIVE_UPDATES.includes(hiveForm.update_type))&&(
+              <input style={inp} placeholder="Describe your update…"
+                value={HIVE_UPDATES.includes(hiveForm.update_type)?'':hiveForm.update_type==='other'?'':hiveForm.update_type}
+                onChange={e=>setHiveForm(f=>({...f,update_type:e.target.value||'other'}))}
+                autoFocus/>
+            )}
             <input style={inp} placeholder="Your location" value={hiveForm.location} onChange={e=>setHiveForm(f=>({...f,location:e.target.value}))}/>
             <textarea style={{...inp,resize:'none',height:80}} placeholder="Details…" value={hiveForm.note} onChange={e=>setHiveForm(f=>({...f,note:e.target.value}))}/>
             <input type="text" name="website" value={honeypot} onChange={e=>setHoneypot(e.target.value)} style={{display:'none'}} tabIndex={-1} autoComplete="off"/>
